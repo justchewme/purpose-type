@@ -1187,10 +1187,23 @@ export default function Home() {
     const { type } = scoreAnswers(answers)
     setPurposeType(type)
     setGateData(data)
+
+    // Build human-readable answer labels (EN) for the email
+    const quizAnswerLabels = {}
+    for (const q of QUESTIONS) {
+      if (q.type === 'rating') continue
+      if (q.type === 'opentext') {
+        quizAnswerLabels[q.id] = answers[q.id] || null
+      } else {
+        const opt = q.options?.find(o => o.type === answers[q.id])
+        quizAnswerLabels[q.id] = opt ? opt.label['EN'] : null
+      }
+    }
+
     try {
       await fetch('/api/purpose-submit', {
         method:'POST', headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({ ...data, purposeType:type, ratings, answers:{ q7:answers.q7, q8:answers.q8 } }),
+        body: JSON.stringify({ ...data, purposeType:type, ratings, answers: quizAnswerLabels }),
       })
     } catch { /* silent */ }
     setSubmitting(false)
@@ -1201,7 +1214,7 @@ export default function Home() {
     try {
       await fetch('/api/purpose-submit', {
         method:'POST', headers:{ 'Content-Type':'application/json' },
-        body: JSON.stringify({ ...gateData, purposeType, ratings, answers:{ q7:answers.q7, q8:answers.q8 }, encounterRequested:true, updateEncounter:true }),
+        body: JSON.stringify({ ...gateData, purposeType, ratings, answers:{ q7:answers.q7 }, encounterRequested:true, updateEncounter:true }),
       })
     } catch { /* silent */ }
     setEncounterRequested(true)

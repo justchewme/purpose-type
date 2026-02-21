@@ -160,10 +160,10 @@ const T = {
     langBtn: 'ID 🇮🇩',
     badge: '✝️ FREE  ·  3 MINUTES  ·  12,847 CHRISTIANS',
     heroTitle: 'God Wired You\nDifferently.',
-    heroSub: 'Discover the specific purpose type God built into you — in 3 minutes.',
+    heroSub: 'Discover the specific Blueprint God crafted for your life — in 3 minutes.',
     verseRef: 'JEREMIAH 29:11',
     verseText: '"For I know the plans I have for you," declares the LORD, "plans to prosper you and not to harm you, plans to give you hope and a future."',
-    cta: 'Reveal My Purpose Type →',
+    cta: 'Reveal My Blueprint →',
     painHeading: 'Does any of this sound like you?',
     pains: [
       '😔  You believe in God — but your faith feels stuck or empty.',
@@ -171,25 +171,33 @@ const T = {
       '🚶  You\'ve drifted from church, but haven\'t stopped believing.',
       '💭  The things that truly light you up feel disconnected from your "Christian duty".',
     ],
-    painClose: 'If even one of these resonates — this quiz was built for you.',
-    typesHeading: 'The 7 Biblical Purpose Types',
+    painClose: 'If even one of these resonates — this was built for you.',
+    whyHeading: 'Why You Need to Know Your Blueprint',
+    whySub: 'Without it, most Christians spend their whole life doing good things — instead of the right things for how God specifically made them.',
+    whys: [
+      { icon:'🔄', text:'You stop comparing yourself to Christians wired completely differently to you.' },
+      { icon:'💡', text:'Your gifts, your frustrations, even your blind spots — suddenly all make sense.' },
+      { icon:'🎯', text:'You know exactly where to invest your energy — and what to let go of.' },
+      { icon:'🕊️', text:'You stop feeling guilty for not being more like someone else. God made you to be you.' },
+    ],
+    typesHeading: 'The 7 Biblical Blueprints',
     proofNum: '12,847',
-    proofText: 'Christians across Southeast Asia have discovered their type',
+    proofText: 'Christians across Southeast Asia have discovered their Blueprint',
     testimonials: [
       { text: 'I cried reading my result. It described me so accurately that I had to reread it twice.', name: 'Rachel T.', city: 'Jakarta' },
       { text: 'Finally I understand why I am wired the way I am. This isn\'t just a quiz — it\'s a mirror.', name: 'Joshua L.', city: 'Batam' },
       { text: 'I shared it with all my friends. 4 of them cried too. This is different from anything I have seen.', name: 'Maria P.', city: 'Surabaya' },
     ],
-    ctaBottom: 'Your purpose has been waiting to be named.',
+    ctaBottom: 'Your Blueprint has been waiting to be revealed.',
     trust: ['🔒 No account', '🚫 No download', '💰 Completely free', '🇸🇬 By Christians in Singapore'],
-    disclaimer: 'This is not a church recruitment tool. We built this because we genuinely believe God designed you with a specific purpose — and we want to help you find it.',
-    qOf: (n,t) => `Question ${n} of ${t}`,
-    pct: p => `${p}% complete`,
+    disclaimer: 'This is not a church recruitment tool. We built this because we genuinely believe God designed you with a specific Blueprint — and we want to help you find it.',
+    qOf: (n,t) => `Clue ${n} of ${t}`,
+    pct: p => p < 40 ? 'Your Blueprint is forming…' : p < 75 ? 'A picture is taking shape…' : 'Almost revealed…',
     continue: 'Continue →',
-    seeResults: 'See My Results →',
+    seeResults: 'See My Blueprint →',
     ratingLow: '1 — Struggling',
     ratingHigh: '5 — Thriving',
-    gateTitle: '🎯 Your Purpose Type is Ready!',
+    gateTitle: '🎯 Your Blueprint is Ready!',
     gateSub: 'Tell us a little about yourself so we can personalise your full report.',
     secContact: '📋 Your Details',
     fldName: 'First Name *',
@@ -226,20 +234,20 @@ const T = {
       { v:'weekends',   label:'🗓️ Weekends' },
     ],
     secMeet: '☕ One Last Question',
-    meetPrompt: 'If someone with a similar purpose type wanted to connect with you — just a casual coffee chat — how would you feel?',
+    meetPrompt: 'If someone with a similar Blueprint wanted to connect with you — just a casual coffee chat — how would you feel?',
     meetOpts: [
       { v:'yes',    label:"😊 I'd love that — I'm open to it!" },
       { v:'maybe',  label:'🤔 Maybe — depends on who it is' },
       { v:'online', label:"💬 I'd prefer to stay in touch online for now" },
       { v:'no',     label:'🙏 Not right now, but thank you' },
     ],
-    submitBtn: 'Reveal My Purpose Type →',
+    submitBtn: 'Reveal My Blueprint →',
     submitting: 'Revealing...',
     gatePriv: '🔒 Your information is private and will never be sold or shared.',
     waErr: 'Please enter a valid Indonesian WhatsApp number (e.g. 0812-3456-7890).',
-    loadLines: ['Analysing your answers…', 'Matching your patterns…', 'Consulting the 7 types…', 'Preparing your revelation…'],
-    resBadge: 'YOUR BIBLICAL PURPOSE TYPE',
-    resRarity: (pct, name) => `Only ${pct}% of people share your type, ${name}`,
+    loadLines: ['Analysing your answers…', 'Matching your patterns…', 'Consulting the 7 Blueprints…', 'Preparing your revelation…'],
+    resBadge: 'YOUR BIBLICAL BLUEPRINT',
+    resRarity: (pct, name) => `Only ${pct}% of people share your Blueprint, ${name}`,
     resWho: 'Who You Are',
     resLife: name => `Your Life Right Now, ${name}`,
     resLifeSub: 'Based on what you shared',
@@ -253,10 +261,10 @@ const T = {
     encNudge: '"If you feel the nudge, say yes. God will take it from there."',
     encCTA: '✝️ Yes — I am Open to a Spiritual Encounter',
     encDoneTitle: name => `Thank you, ${name}.`,
-    encDoneBody: "Someone is being set apart for you. You'll receive a WhatsApp message within 24 hours from someone who has a similar purpose type and a story worth hearing. Until then — keep seeking.",
+    encDoneBody: "Someone is being set apart for you. You'll receive a WhatsApp message within 24 hours from someone who shares a similar Blueprint and has a story worth hearing. Until then — keep seeking.",
     noMeet: name => `We respect your space, ${name}. If you ever want to connect, we are always here. 🙏`,
     shareTitle: 'Share with your friends',
-    shareSub: 'Let them discover their Biblical Purpose Type too',
+    shareSub: 'Let them discover their Biblical Blueprint too',
     shareWA: '📲 Share on WhatsApp',
     copyLink: '🔗 Copy Link',
     copyAlert: 'Link copied!',
@@ -273,10 +281,10 @@ const T = {
     langBtn: 'EN 🇬🇧',
     badge: '✝️ GRATIS  ·  3 MENIT  ·  12.847 ORANG KRISTEN',
     heroTitle: 'Kamu Bukan\nKebetulan.',
-    heroSub: 'Temukan tipe tujuan spesifik yang Tuhan tanamkan dalam dirimu — dalam 3 menit.',
+    heroSub: 'Temukan Blueprint spesifik yang Tuhan rancang untuk hidupmu — dalam 3 menit.',
     verseRef: 'YEREMIA 29:11',
     verseText: '"Aku mengetahui rancangan-rancangan yang ada pada-Ku mengenai kamu," firman TUHAN, "yaitu rancangan damai sejahtera dan bukan rancangan kecelakaan, untuk memberikan kepadamu hari depan yang penuh harapan."',
-    cta: 'Ungkap Tipe Tujuanku →',
+    cta: 'Ungkap Blueprintku →',
     painHeading: 'Apakah ini terdengar familiar bagimu?',
     pains: [
       '😔  Kamu percaya Tuhan — tapi imanmu terasa mandek atau hampa.',
@@ -285,24 +293,32 @@ const T = {
       '💭  Hal-hal yang membuatmu bersemangat terasa tidak nyambung dengan "kewajiban Kristen".',
     ],
     painClose: 'Jika salah satu dari ini terasa nyata — kuis ini dibuat untukmu.',
-    typesHeading: '7 Tipe Tujuan Alkitab',
+    whyHeading: 'Kenapa Kamu Perlu Tahu Blueprintmu',
+    whySub: 'Tanpa itu, banyak orang Kristen menghabiskan seluruh hidupnya melakukan hal-hal baik — bukan hal-hal yang tepat sesuai cara Tuhan merancang mereka.',
+    whys: [
+      { icon:'🔄', text:'Kamu berhenti membandingkan dirimu dengan orang Kristen yang dirancang sangat berbeda darimu.' },
+      { icon:'💡', text:'Karuniamu, frustrasimu, bahkan titik butamu — tiba-tiba semua masuk akal.' },
+      { icon:'🎯', text:'Kamu tahu persis di mana menginvestasikan energimu — dan apa yang harus kamu lepaskan.' },
+      { icon:'🕊️', text:'Kamu berhenti merasa bersalah karena tidak menjadi seperti orang lain. Tuhan membuatmu untuk menjadi dirimu.' },
+    ],
+    typesHeading: '7 Biblical Blueprint',
     proofNum: '12.847',
-    proofText: 'orang Kristen di Asia Tenggara telah menemukan tipe mereka',
+    proofText: 'orang Kristen di Asia Tenggara telah menemukan Blueprint mereka',
     testimonials: [
       { text: 'Aku nangis baca hasilnya. Persis menggambarkan aku sampai aku baca ulang dua kali.', name: 'Rachel T.', city: 'Jakarta' },
       { text: 'Akhirnya aku mengerti kenapa aku diciptakan seperti ini. Ini bukan sekadar kuis — ini cermin.', name: 'Joshua L.', city: 'Batam' },
       { text: 'Aku share ke semua temanku. 4 orang juga menangis. Ini beda dari semua yang pernah aku lihat.', name: 'Maria P.', city: 'Surabaya' },
     ],
-    ctaBottom: 'Tujuanmu sudah menunggu untuk dinamai.',
+    ctaBottom: 'Blueprintmu sudah menunggu untuk diungkap.',
     trust: ['🔒 Tanpa akun', '🚫 Tanpa unduhan', '💰 Sepenuhnya gratis', '🇸🇬 Oleh Kristen di Singapura'],
-    disclaimer: 'Ini bukan alat rekrutmen gereja. Kami membangun ini karena kami sungguh percaya Allah merancangmu dengan tujuan spesifik — dan kami ingin membantumu menemukannya.',
-    qOf: (n,t) => `Pertanyaan ${n} dari ${t}`,
-    pct: p => `${p}% selesai`,
+    disclaimer: 'Ini bukan alat rekrutmen gereja. Kami membangun ini karena kami sungguh percaya Allah merancangmu dengan Blueprint spesifik — dan kami ingin membantumu menemukannya.',
+    qOf: (n,t) => `Petunjuk ${n} dari ${t}`,
+    pct: p => p < 40 ? 'Blueprintmu sedang terbentuk…' : p < 75 ? 'Gambaran mulai terlihat…' : 'Hampir terungkap…',
     continue: 'Lanjutkan →',
-    seeResults: 'Lihat Hasilku →',
+    seeResults: 'Lihat Blueprintku →',
     ratingLow: '1 — Kesulitan',
     ratingHigh: '5 — Berkembang',
-    gateTitle: '🎯 Tipe Tujuanmu Sudah Siap!',
+    gateTitle: '🎯 Blueprintmu Sudah Siap!',
     gateSub: 'Ceritakan sedikit tentang dirimu agar kami bisa mempersonalisasi laporanmu.',
     secContact: '📋 Detail Kamu',
     fldName: 'Nama Depan *',
@@ -339,20 +355,20 @@ const T = {
       { v:'weekends',   label:'🗓️ Akhir pekan' },
     ],
     secMeet: '☕ Satu Pertanyaan Terakhir',
-    meetPrompt: 'Jika seseorang dengan tipe tujuan serupa ingin terhubung denganmu — hanya ngobrol santai sambil ngopi — bagaimana perasaanmu?',
+    meetPrompt: 'Jika seseorang dengan Blueprint serupa ingin terhubung denganmu — hanya ngobrol santai sambil ngopi — bagaimana perasaanmu?',
     meetOpts: [
       { v:'yes',    label:'😊 Mau banget — aku terbuka!' },
       { v:'maybe',  label:'🤔 Mungkin — tergantung orangnya' },
       { v:'online', label:'💬 Lebih suka terhubung online dulu' },
       { v:'no',     label:'🙏 Belum sekarang, tapi terima kasih' },
     ],
-    submitBtn: 'Ungkap Tipe Tujuanku →',
+    submitBtn: 'Ungkap Blueprintku →',
     submitting: 'Mengungkap...',
     gatePriv: '🔒 Informasimu bersifat privat dan tidak akan dijual atau dibagikan.',
     waErr: 'Masukkan nomor WhatsApp Indonesia yang valid (misal: 0812-3456-7890).',
-    loadLines: ['Menganalisis jawabanmu…', 'Mencocokkan polamu…', 'Memeriksa 7 tipe…', 'Menyiapkan pengungkapanmu…'],
-    resBadge: 'TIPE TUJUAN ALKITABMU',
-    resRarity: (pct, name) => `Hanya ${pct}% orang berbagi tipe ini, ${name}`,
+    loadLines: ['Menganalisis jawabanmu…', 'Mencocokkan polamu…', 'Memeriksa 7 Blueprint…', 'Menyiapkan pengungkapanmu…'],
+    resBadge: 'BIBLICAL BLUEPRINT-MU',
+    resRarity: (pct, name) => `Hanya ${pct}% orang berbagi Blueprint ini, ${name}`,
     resWho: 'Siapa Kamu',
     resLife: name => `Hidupmu Saat Ini, ${name}`,
     resLifeSub: 'Berdasarkan apa yang kamu bagikan',
@@ -366,10 +382,10 @@ const T = {
     encNudge: '"Kalau kamu merasakan dorongan itu, katakan ya. Tuhan akan mengurus sisanya."',
     encCTA: '✝️ Ya — Aku Terbuka untuk Perjumpaan Rohani',
     encDoneTitle: name => `Terima kasih, ${name}.`,
-    encDoneBody: 'Seseorang sedang disiapkan untukmu. Kamu akan menerima pesan WhatsApp dalam 24 jam dari seseorang yang memiliki tipe tujuan serupa. Sampai saat itu — terus mencari.',
+    encDoneBody: 'Seseorang sedang disiapkan untukmu. Kamu akan menerima pesan WhatsApp dalam 24 jam dari seseorang yang memiliki Blueprint serupa dan kisah yang layak untuk didengar. Sampai saat itu — terus mencari.',
     noMeet: name => `Kami menghormati ruangmu, ${name}. Jika kamu ingin terhubung, kami selalu ada. 🙏`,
     shareTitle: 'Bagikan ke temanmu',
-    shareSub: 'Biarkan mereka menemukan Tipe Tujuan Alkitab mereka juga',
+    shareSub: 'Biarkan mereka menemukan Biblical Blueprint mereka juga',
     shareWA: '📲 Bagikan di WhatsApp',
     copyLink: '🔗 Salin Link',
     copyAlert: 'Link tersalin!',
@@ -387,6 +403,7 @@ const T = {
 const QUESTIONS = [
   {
     id:'q1',
+    teaser:{ EN:'Your childhood dream held a divine clue…', ID:'Impian masa kecilmu menyimpan petunjuk ilahi…' },
     text:{ EN:'As a child, what did you dream of becoming?', ID:'Saat kamu kecil, apa yang kamu impikan untuk menjadi?' },
     options:[
       { label:{ EN:'An engineer, architect, or someone who builds things', ID:'Seorang insinyur, arsitek, atau seseorang yang membangun sesuatu' }, type:'BUILDER' },
@@ -400,6 +417,7 @@ const QUESTIONS = [
   },
   {
     id:'q2',
+    teaser:{ EN:'What captivates you reveals exactly how God wired you.', ID:'Apa yang paling menyita perhatianmu mengungkap cara Tuhan merancangmu.' },
     text:{ EN:'What activity makes you completely lose track of time?', ID:'Aktivitas apa yang membuatmu benar-benar lupa waktu?' },
     options:[
       { label:{ EN:'Building, fixing, or designing something meaningful', ID:'Membangun, memperbaiki, atau merancang sesuatu yang bermakna' }, type:'BUILDER' },
@@ -413,6 +431,7 @@ const QUESTIONS = [
   },
   {
     id:'q3',
+    teaser:{ EN:'Your instinct toward pain is a direct pointer to your purpose.', ID:'Instinkmu terhadap rasa sakit menunjuk langsung pada tujuanmu.' },
     text:{ EN:'When you see suffering or injustice, what is your first instinct?', ID:'Ketika kamu melihat penderitaan atau ketidakadilan, apa instink pertamamu?' },
     options:[
       { label:{ EN:'Fix it — find a practical solution and build a path forward', ID:'Perbaiki — temukan solusi praktis dan bangun jalan ke depan' }, type:'BUILDER' },
@@ -426,6 +445,7 @@ const QUESTIONS = [
   },
   {
     id:'q4',
+    teaser:{ EN:'The role others need from you is almost never an accident.', ID:'Peran yang dibutuhkan orang darimu hampir tidak pernah kebetulan.' },
     text:{ EN:'In your circle, people usually come to you when they need…', ID:'Di lingkunganmu, orang biasanya datang ke kamu ketika mereka butuh…' },
     options:[
       { label:{ EN:'A practical solution — someone who can make it actually happen', ID:'Solusi praktis — seseorang yang bisa membuatnya benar-benar terjadi' }, type:'BUILDER' },
@@ -439,6 +459,7 @@ const QUESTIONS = [
   },
   {
     id:'q5', type:'rating',
+    teaser:{ EN:'Where you feel most drained is where God wants to move first.', ID:'Di mana kamu paling lelah adalah di mana Tuhan ingin bergerak terlebih dahulu.' },
     text:{ EN:'Rate how fulfilled you feel in each area of your life right now:', ID:'Nilai seberapa puas kamu dengan setiap area hidupmu saat ini:' },
     areas:[
       { id:'career',        label:{ EN:'💼 Career & Purpose',       ID:'💼 Karier & Tujuan' } },
@@ -449,6 +470,7 @@ const QUESTIONS = [
   },
   {
     id:'q6',
+    teaser:{ EN:'The quiet voice in your soul is speaking your Blueprint right now.', ID:'Suara tenang dalam jiwamu sedang mengucapkan Blueprintmu saat ini.' },
     text:{ EN:"When you're alone and quiet — perhaps in prayer — what do you feel most strongly?", ID:'Ketika kamu sendirian dan tenang — mungkin dalam doa — apa yang paling kuat kamu rasakan?' },
     options:[
       { label:{ EN:'A deep desire to create or build something for God', ID:'Keinginan yang dalam untuk menciptakan atau membangun sesuatu bagi Tuhan' }, type:'BUILDER' },
@@ -462,15 +484,10 @@ const QUESTIONS = [
   },
   {
     id:'q7', type:'opentext',
+    teaser:{ EN:'This one honest answer makes your result deeply personal.', ID:'Satu jawaban jujur ini akan membuat hasilmu sangat personal.' },
     text:{ EN:'Complete this sentence honestly:', ID:'Lengkapi kalimat ini dengan jujur:' },
     subtitle:{ EN:'"I wish God would show me…"', ID:'"Saya berharap Tuhan menunjukkan kepada saya…"' },
     placeholder:{ EN:'Type your answer here — be as honest as you want…', ID:'Tulis jawabanmu di sini — sejujur yang kamu mau…' },
-  },
-  {
-    id:'q8', type:'opentext',
-    text:{ EN:'What would make your life feel truly meaningful?', ID:'Apa yang akan membuat hidupmu terasa benar-benar bermakna?' },
-    subtitle:{ EN:null, ID:null },
-    placeholder:{ EN:'Take a moment. Be really honest with yourself.', ID:'Luangkan waktu. Jujurlah dengan dirimu sendiri.' },
   },
 ]
 
@@ -603,6 +620,22 @@ function Landing({ lang, onStart }) {
         </div>
       </div>
 
+      {/* ── WHY section ── */}
+      {tx.whyHeading && (
+        <div style={{ padding:'36px 20px', background:'#FFFBEB', borderBottom:`1px solid #FDE68A` }}>
+          <div style={{ maxWidth:520, margin:'0 auto' }}>
+            <h2 className="au" style={{ color:C.navyDark, fontSize:22, fontWeight:800, margin:'0 0 10px', lineHeight:1.3 }}>{tx.whyHeading}</h2>
+            <p className="au af1" style={{ color:C.sub, fontSize:15, margin:'0 0 24px', lineHeight:1.65 }}>{tx.whySub}</p>
+            {tx.whys.map((w, i) => (
+              <div key={i} className={`au af${i+2}`} style={{ display:'flex', gap:14, marginBottom:14, alignItems:'flex-start', background:'#fff', borderRadius:12, padding:'14px 16px', border:`1px solid #FDE68A` }}>
+                <span style={{ fontSize:24, flexShrink:0, marginTop:1 }}>{w.icon}</span>
+                <p style={{ color:C.text, fontSize:15, lineHeight:1.65, margin:0 }}>{w.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── Social proof ── */}
       <div style={{ background:'#fff', padding:'32px 20px', textAlign:'center', borderBottom:`1px solid ${C.border}` }}>
         <div style={{ maxWidth:520, margin:'0 auto' }}>
@@ -674,10 +707,15 @@ function MCQuestion({ q, qIndex, total, selected, onSelect, onNext, lang }) {
     <div style={wrap}>
       <ProgressBar current={qIndex+1} total={total} lang={lang} />
       <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
-        <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:10 }}>
+        <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>
           {tx.qOf(qIndex+1, total)}
         </p>
-        <h2 className="au" style={{ fontSize:23, fontWeight:800, color:C.navy, lineHeight:1.35, margin:'0 0 24px' }}>
+        {q.teaser?.[lang] && (
+          <p className="au" style={{ fontSize:14, color:C.muted, fontStyle:'italic', margin:'0 0 14px', lineHeight:1.5 }}>
+            ✨ {q.teaser[lang]}
+          </p>
+        )}
+        <h2 className="au af1" style={{ fontSize:23, fontWeight:800, color:C.navy, lineHeight:1.35, margin:'0 0 24px' }}>
           {q.text[lang]}
         </h2>
         <div>
@@ -720,13 +758,18 @@ function RatingQuestion({ q, qIndex, total, ratings, onRate, onNext, lang }) {
     <div style={wrap}>
       <ProgressBar current={qIndex+1} total={total} lang={lang} />
       <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
-        <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:10 }}>
+        <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>
           {tx.qOf(qIndex+1, total)}
         </p>
-        <h2 className="au" style={{ fontSize:23, fontWeight:800, color:C.navy, lineHeight:1.35, margin:'0 0 6px' }}>
+        {q.teaser?.[lang] && (
+          <p className="au" style={{ fontSize:14, color:C.muted, fontStyle:'italic', margin:'0 0 14px', lineHeight:1.5 }}>
+            ✨ {q.teaser[lang]}
+          </p>
+        )}
+        <h2 className="au af1" style={{ fontSize:23, fontWeight:800, color:C.navy, lineHeight:1.35, margin:'0 0 6px' }}>
           {q.text[lang]}
         </h2>
-        <p className="au af1" style={{ fontSize:14, color:C.muted, margin:'0 0 28px' }}>
+        <p className="au af2" style={{ fontSize:14, color:C.muted, margin:'0 0 28px' }}>
           {tx.ratingLow} &nbsp;→&nbsp; {tx.ratingHigh}
         </p>
         <div style={{ display:'flex', flexDirection:'column', gap:22, marginBottom:32 }}>
@@ -772,14 +815,19 @@ function OpenTextQuestion({ q, qIndex, total, value, onChange, onNext, lang }) {
     <div style={wrap}>
       <ProgressBar current={qIndex+1} total={total} lang={lang} />
       <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
-        <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:10 }}>
+        <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>
           {tx.qOf(qIndex+1, total)}
         </p>
-        <h2 className="au" style={{ fontSize:23, fontWeight:800, color:C.navy, lineHeight:1.35, margin:'0 0 8px' }}>
+        {q.teaser?.[lang] && (
+          <p className="au" style={{ fontSize:14, color:C.muted, fontStyle:'italic', margin:'0 0 14px', lineHeight:1.5 }}>
+            ✨ {q.teaser[lang]}
+          </p>
+        )}
+        <h2 className="au af1" style={{ fontSize:23, fontWeight:800, color:C.navy, lineHeight:1.35, margin:'0 0 8px' }}>
           {q.text[lang]}
         </h2>
         {q.subtitle[lang] && (
-          <p className="au af1" style={{ fontSize:20, fontStyle:'italic', color:C.navy, opacity:0.85, margin:'0 0 24px', fontWeight:600 }}>
+          <p className="au af2" style={{ fontSize:20, fontStyle:'italic', color:C.navy, opacity:0.85, margin:'0 0 24px', fontWeight:600 }}>
             {q.subtitle[lang]}
           </p>
         )}
@@ -1163,9 +1211,9 @@ export default function Home() {
     <Head>
       <title>{title}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="description" content="Discover what God specifically designed you to do — 7 Biblical Purpose Types quiz. Free, 3 minutes." />
-      <meta property="og:title" content="Which of the 7 Biblical Purpose Types Are You?" />
-      <meta property="og:description" content="God wired you differently. Discover your specific purpose type — free, 3 minutes." />
+      <meta name="description" content="Discover the specific Biblical Blueprint God designed for your life — 7 types, free, 3 minutes." />
+      <meta property="og:title" content="Which of the 7 Biblical Blueprints Are You?" />
+      <meta property="og:description" content="God wired you differently. Discover your specific Biblical Blueprint — free, 3 minutes." />
       <meta property="og:type" content="website" />
       <style>{GLOBAL_CSS}</style>
     </Head>
@@ -1174,8 +1222,8 @@ export default function Home() {
   return (
     <>
       {head(screen==='results' && purposeType
-        ? `I am ${TYPES[purposeType].name[lang]} — Biblical Purpose Types`
-        : 'Which of the 7 Biblical Purpose Types Are You?'
+        ? `I am ${TYPES[purposeType].name[lang]} — Biblical Blueprints`
+        : 'Which of the 7 Biblical Blueprints Are You?'
       )}
       <LangToggle lang={lang} setLang={setLang} />
 

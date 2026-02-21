@@ -27,8 +27,10 @@ const TYPE_NAMES = {
 const RATING_EMOJI = ['','😔','😕','😐','🙂','😄']
 const RATING_LABEL = ['','Struggling','Difficult','Okay','Good','Thriving']
 
+// NOTE: Resend free tier only allows sending to the verified account email.
+// To also notify elearning@equippedministries.org, verify the equippedministries.org
+// domain at resend.com/domains and update the `from` address accordingly.
 const NOTIFY_EMAILS = [
-  'elearning@equippedministries.org',
   'justchewme@gmail.com',
 ]
 

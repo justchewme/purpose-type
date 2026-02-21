@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 
 // ─── GLOBAL CSS (animations) ──────────────────────────────────────────────────
@@ -23,6 +23,13 @@ const GLOBAL_CSS = `
   .opt-card { transition: all 0.18s ease; cursor:pointer; }
   .opt-card:hover { border-color:#0F2167 !important; background:#F0F4FF !important; transform:translateX(3px); }
   .opt-card.sel { background:#0A1628 !important; color:#fff !important; border-color:#F59E0B !important; transform:translateX(4px); }
+  @keyframes bubbleIn { from { opacity:0; transform:translateY(14px) scale(0.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes popSel { 0% { transform:scale(1); } 40% { transform:scale(1.06); } 100% { transform:scale(1); } }
+  @keyframes glowGold { 0%,100% { box-shadow:0 0 0 0 rgba(245,158,11,0); } 50% { box-shadow:0 0 0 6px rgba(245,158,11,0.25); } }
+  .bubble-in { animation: bubbleIn 0.35s cubic-bezier(.2,0,.1,1) both; }
+  .opt-icon { transition: background 0.15s ease, border-color 0.15s ease; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .opt-icon:active { opacity:0.85; transform:scale(0.97); }
+  .opt-icon.sel { animation: popSel 0.35s ease; }
   button { cursor:pointer; }
   a { text-decoration:none; color:inherit; }
   ::-webkit-scrollbar { width:4px; }
@@ -406,13 +413,13 @@ const QUESTIONS = [
     teaser:{ EN:'Your childhood dream held a divine clue…', ID:'Impian masa kecilmu menyimpan petunjuk ilahi…' },
     text:{ EN:'As a child, what did you dream of becoming?', ID:'Saat kamu kecil, apa yang kamu impikan untuk menjadi?' },
     options:[
-      { label:{ EN:'An engineer, architect, or someone who builds things', ID:'Seorang insinyur, arsitek, atau seseorang yang membangun sesuatu' }, type:'BUILDER' },
-      { label:{ EN:'A doctor, nurse, or someone who heals people', ID:'Dokter, perawat, atau seseorang yang menyembuhkan orang' }, type:'HEALER' },
-      { label:{ EN:'A teacher, researcher, or explorer of ideas', ID:'Guru, peneliti, atau penjelajah ide' }, type:'SEEKER' },
-      { label:{ EN:'A leader, pastor, or someone who guides others', ID:'Pemimpin, pendeta, atau seseorang yang membimbing orang lain' }, type:'SHEPHERD' },
-      { label:{ EN:'An entrepreneur or someone who makes things happen', ID:'Pengusaha atau seseorang yang membuat sesuatu terjadi' }, type:'CATALYST' },
-      { label:{ EN:'An artist, musician, writer, or creative', ID:'Seniman, musisi, penulis, atau kreator' }, type:'CREATOR' },
-      { label:{ EN:'Someone faithful — close to family and deeply loyal', ID:'Seseorang yang setia — dekat dengan keluarga dan sangat loyal' }, type:'ANCHOR' },
+      { icon:'🏗️', short:{ EN:'Build things',     ID:'Membangun sesuatu'       }, label:{ EN:'An engineer, architect, or someone who builds things',        ID:'Seorang insinyur, arsitek, atau seseorang yang membangun sesuatu'     }, type:'BUILDER'  },
+      { icon:'🩺', short:{ EN:'Heal people',      ID:'Menyembuhkan orang'      }, label:{ EN:'A doctor, nurse, or someone who heals people',                ID:'Dokter, perawat, atau seseorang yang menyembuhkan orang'             }, type:'HEALER'   },
+      { icon:'📚', short:{ EN:'Explore ideas',    ID:'Menjelajahi ide'         }, label:{ EN:'A teacher, researcher, or explorer of ideas',                 ID:'Guru, peneliti, atau penjelajah ide'                                 }, type:'SEEKER'   },
+      { icon:'🤝', short:{ EN:'Guide others',     ID:'Membimbing orang lain'   }, label:{ EN:'A leader, pastor, or someone who guides others',              ID:'Pemimpin, pendeta, atau seseorang yang membimbing orang lain'        }, type:'SHEPHERD' },
+      { icon:'🚀', short:{ EN:'Make it happen',   ID:'Buat sesuatu terjadi'    }, label:{ EN:'An entrepreneur or someone who makes things happen',          ID:'Pengusaha atau seseorang yang membuat sesuatu terjadi'               }, type:'CATALYST' },
+      { icon:'🎨', short:{ EN:'Create & express', ID:'Berkreasi'               }, label:{ EN:'An artist, musician, writer, or creative',                   ID:'Seniman, musisi, penulis, atau kreator'                             }, type:'CREATOR'  },
+      { icon:'🏡', short:{ EN:'Stay faithful',    ID:'Tetap setia'             }, label:{ EN:'Someone faithful — close to family and deeply loyal',         ID:'Seseorang yang setia — dekat dengan keluarga dan sangat loyal'       }, type:'ANCHOR'   },
     ],
   },
   {
@@ -420,13 +427,13 @@ const QUESTIONS = [
     teaser:{ EN:'What captivates you reveals exactly how God wired you.', ID:'Apa yang paling menyita perhatianmu mengungkap cara Tuhan merancangmu.' },
     text:{ EN:'What activity makes you completely lose track of time?', ID:'Aktivitas apa yang membuatmu benar-benar lupa waktu?' },
     options:[
-      { label:{ EN:'Building, fixing, or designing something meaningful', ID:'Membangun, memperbaiki, atau merancang sesuatu yang bermakna' }, type:'BUILDER' },
-      { label:{ EN:'Sitting with someone who is hurting and truly helping them', ID:'Menemani seseorang yang terluka dan benar-benar membantunya' }, type:'HEALER' },
-      { label:{ EN:'Reading, studying, or having really deep conversations', ID:'Membaca, belajar, atau berdiskusi sangat mendalam' }, type:'SEEKER' },
-      { label:{ EN:"Mentoring, guiding, or investing in someone's growth", ID:'Membimbing atau berinvestasi dalam pertumbuhan seseorang' }, type:'SHEPHERD' },
-      { label:{ EN:'Launching something new and watching it come alive', ID:'Meluncurkan sesuatu yang baru dan melihatnya hidup' }, type:'CATALYST' },
-      { label:{ EN:'Creating — art, music, writing, or anything expressive', ID:'Menciptakan — seni, musik, tulisan, atau apa pun yang ekspresif' }, type:'CREATOR' },
-      { label:{ EN:'Simply being present with the people I love most', ID:'Sekadar hadir bersama orang-orang yang paling kucintai' }, type:'ANCHOR' },
+      { icon:'🔧', short:{ EN:'Build or design',    ID:'Membangun/merancang'    }, label:{ EN:'Building, fixing, or designing something meaningful',           ID:'Membangun, memperbaiki, atau merancang sesuatu yang bermakna'        }, type:'BUILDER'  },
+      { icon:'💙', short:{ EN:'Help the hurting',   ID:'Bantu yang terluka'     }, label:{ EN:'Sitting with someone who is hurting and truly helping them',    ID:'Menemani seseorang yang terluka dan benar-benar membantunya'         }, type:'HEALER'   },
+      { icon:'📖', short:{ EN:'Study & discuss',    ID:'Belajar/berdiskusi'     }, label:{ EN:'Reading, studying, or having really deep conversations',        ID:'Membaca, belajar, atau berdiskusi sangat mendalam'                   }, type:'SEEKER'   },
+      { icon:'🌱', short:{ EN:'Mentor someone',     ID:'Membimbing seseorang'   }, label:{ EN:"Mentoring, guiding, or investing in someone's growth",         ID:'Membimbing atau berinvestasi dalam pertumbuhan seseorang'            }, type:'SHEPHERD' },
+      { icon:'⚡', short:{ EN:'Launch new things',  ID:'Luncurkan hal baru'     }, label:{ EN:'Launching something new and watching it come alive',           ID:'Meluncurkan sesuatu yang baru dan melihatnya hidup'                  }, type:'CATALYST' },
+      { icon:'🎶', short:{ EN:'Create anything',    ID:'Menciptakan apa saja'   }, label:{ EN:'Creating — art, music, writing, or anything expressive',       ID:'Menciptakan — seni, musik, tulisan, atau apa pun yang ekspresif'    }, type:'CREATOR'  },
+      { icon:'❤️', short:{ EN:'Be with loved ones', ID:'Bersama orang tercinta' }, label:{ EN:'Simply being present with the people I love most',             ID:'Sekadar hadir bersama orang-orang yang paling kucintai'             }, type:'ANCHOR'   },
     ],
   },
   {
@@ -434,13 +441,13 @@ const QUESTIONS = [
     teaser:{ EN:'Your instinct toward pain is a direct pointer to your purpose.', ID:'Instinkmu terhadap rasa sakit menunjuk langsung pada tujuanmu.' },
     text:{ EN:'When you see suffering or injustice, what is your first instinct?', ID:'Ketika kamu melihat penderitaan atau ketidakadilan, apa instink pertamamu?' },
     options:[
-      { label:{ EN:'Fix it — find a practical solution and build a path forward', ID:'Perbaiki — temukan solusi praktis dan bangun jalan ke depan' }, type:'BUILDER' },
-      { label:{ EN:'Go to the person first and comfort them', ID:'Pergi ke orangnya terlebih dahulu dan menghiburnya' }, type:'HEALER' },
-      { label:{ EN:"Research and understand what's truly causing it", ID:'Meneliti dan memahami apa yang benar-benar menyebabkannya' }, type:'SEEKER' },
-      { label:{ EN:'Protect and stand with the most vulnerable', ID:'Melindungi dan berpihak pada yang paling rentan' }, type:'SHEPHERD' },
-      { label:{ EN:'Rally others and spark a movement for change', ID:'Menggerakkan orang lain dan memicu pergerakan perubahan' }, type:'CATALYST' },
-      { label:{ EN:'Tell the story in a way that moves hearts and minds', ID:'Menceritakan kisah itu dengan cara yang menggerakkan hati' }, type:'CREATOR' },
-      { label:{ EN:'Stay faithful to those affected — long-term, quietly', ID:'Tetap setia bagi yang terdampak — jangka panjang, dengan tenang' }, type:'ANCHOR' },
+      { icon:'🔨', short:{ EN:'Fix it fast',       ID:'Perbaiki segera'         }, label:{ EN:'Fix it — find a practical solution and build a path forward',    ID:'Perbaiki — temukan solusi praktis dan bangun jalan ke depan'         }, type:'BUILDER'  },
+      { icon:'🤗', short:{ EN:'Comfort them',      ID:'Menghibur mereka'        }, label:{ EN:'Go to the person first and comfort them',                       ID:'Pergi ke orangnya terlebih dahulu dan menghiburnya'                  }, type:'HEALER'   },
+      { icon:'🔬', short:{ EN:'Research why',      ID:'Teliti penyebabnya'      }, label:{ EN:"Research and understand what's truly causing it",               ID:'Meneliti dan memahami apa yang benar-benar menyebabkannya'           }, type:'SEEKER'   },
+      { icon:'🛡️', short:{ EN:'Protect the weak',  ID:'Lindungi yang rentan'    }, label:{ EN:'Protect and stand with the most vulnerable',                   ID:'Melindungi dan berpihak pada yang paling rentan'                    }, type:'SHEPHERD' },
+      { icon:'📢', short:{ EN:'Rally others',      ID:'Gerakkan semua orang'   }, label:{ EN:'Rally others and spark a movement for change',                  ID:'Menggerakkan orang lain dan memicu pergerakan perubahan'             }, type:'CATALYST' },
+      { icon:'✍️', short:{ EN:'Tell their story',  ID:'Ceritakan kisahnya'      }, label:{ EN:'Tell the story in a way that moves hearts and minds',           ID:'Menceritakan kisah itu dengan cara yang menggerakkan hati'           }, type:'CREATOR'  },
+      { icon:'🌿', short:{ EN:'Stay beside them',  ID:'Tetap di sisinya'        }, label:{ EN:'Stay faithful to those affected — long-term, quietly',          ID:'Tetap setia bagi yang terdampak — jangka panjang, dengan tenang'    }, type:'ANCHOR'   },
     ],
   },
   {
@@ -448,13 +455,13 @@ const QUESTIONS = [
     teaser:{ EN:'The role others need from you is almost never an accident.', ID:'Peran yang dibutuhkan orang darimu hampir tidak pernah kebetulan.' },
     text:{ EN:'In your circle, people usually come to you when they need…', ID:'Di lingkunganmu, orang biasanya datang ke kamu ketika mereka butuh…' },
     options:[
-      { label:{ EN:'A practical solution — someone who can make it actually happen', ID:'Solusi praktis — seseorang yang bisa membuatnya benar-benar terjadi' }, type:'BUILDER' },
-      { label:{ EN:'Emotional support — someone who truly gets their pain', ID:'Dukungan emosional — seseorang yang benar-benar memahami rasa sakit mereka' }, type:'HEALER' },
-      { label:{ EN:'Wisdom or perspective — someone to think deeply with them', ID:'Hikmat atau perspektif — seseorang untuk berpikir mendalam bersama' }, type:'SEEKER' },
-      { label:{ EN:'Direction or guidance — someone to genuinely look out for them', ID:'Arahan atau bimbingan — seseorang yang benar-benar peduli dengan mereka' }, type:'SHEPHERD' },
-      { label:{ EN:'Courage — someone who will push them to take the next step', ID:'Keberanian — seseorang yang akan mendorong mereka untuk melangkah' }, type:'CATALYST' },
-      { label:{ EN:'A fresh idea or creative perspective on a tough problem', ID:'Ide segar atau perspektif kreatif untuk masalah yang sulit' }, type:'CREATOR' },
-      { label:{ EN:'Dependability — someone they know will be there, no matter what', ID:'Keandalan — seseorang yang mereka tahu akan selalu ada, apapun yang terjadi' }, type:'ANCHOR' },
+      { icon:'⚙️', short:{ EN:'A practical fix',    ID:'Solusi praktis'         }, label:{ EN:'A practical solution — someone who can make it actually happen', ID:'Solusi praktis — seseorang yang bisa membuatnya benar-benar terjadi' }, type:'BUILDER'  },
+      { icon:'💗', short:{ EN:'Emotional support',  ID:'Dukungan emosional'     }, label:{ EN:'Emotional support — someone who truly gets their pain',         ID:'Dukungan emosional — seseorang yang benar-benar memahami rasa sakit mereka' }, type:'HEALER' },
+      { icon:'💡', short:{ EN:'Wisdom & insight',   ID:'Hikmat & wawasan'       }, label:{ EN:'Wisdom or perspective — someone to think deeply with them',     ID:'Hikmat atau perspektif — seseorang untuk berpikir mendalam bersama'  }, type:'SEEKER'   },
+      { icon:'🧭', short:{ EN:'Direction & care',   ID:'Arahan & bimbingan'     }, label:{ EN:'Direction or guidance — someone to genuinely look out for them',ID:'Arahan atau bimbingan — seseorang yang benar-benar peduli dengan mereka' }, type:'SHEPHERD' },
+      { icon:'💪', short:{ EN:'Courage to act',     ID:'Keberanian bertindak'   }, label:{ EN:'Courage — someone who will push them to take the next step',    ID:'Keberanian — seseorang yang akan mendorong mereka untuk melangkah'   }, type:'CATALYST' },
+      { icon:'🎯', short:{ EN:'Fresh ideas',        ID:'Ide-ide segar'          }, label:{ EN:'A fresh idea or creative perspective on a tough problem',       ID:'Ide segar atau perspektif kreatif untuk masalah yang sulit'          }, type:'CREATOR'  },
+      { icon:'🔒', short:{ EN:'Reliability',        ID:'Keandalan'              }, label:{ EN:'Dependability — someone they know will be there, no matter what',ID:'Keandalan — seseorang yang mereka tahu akan selalu ada, apapun yang terjadi' }, type:'ANCHOR' },
     ],
   },
   {
@@ -462,10 +469,10 @@ const QUESTIONS = [
     teaser:{ EN:'Where you feel most drained is where God wants to move first.', ID:'Di mana kamu paling lelah adalah di mana Tuhan ingin bergerak terlebih dahulu.' },
     text:{ EN:'Rate how fulfilled you feel in each area of your life right now:', ID:'Nilai seberapa puas kamu dengan setiap area hidupmu saat ini:' },
     areas:[
-      { id:'career',        label:{ EN:'💼 Career & Purpose',       ID:'💼 Karier & Tujuan' } },
-      { id:'relationships', label:{ EN:'❤️ Relationships & Love',   ID:'❤️ Hubungan & Cinta' } },
-      { id:'faith',         label:{ EN:'✝️ Faith & Spiritual Life', ID:'✝️ Iman & Kehidupan Rohani' } },
-      { id:'peace',         label:{ EN:'🕊️ Inner Peace & Joy',      ID:'🕊️ Kedamaian Batin & Sukacita' } },
+      { id:'career',        label:{ EN:'💼 Career & Purpose',       ID:'💼 Karier & Tujuan'              } },
+      { id:'relationships', label:{ EN:'❤️ Relationships & Love',   ID:'❤️ Hubungan & Cinta'             } },
+      { id:'faith',         label:{ EN:'✝️ Faith & Spiritual Life', ID:'✝️ Iman & Kehidupan Rohani'      } },
+      { id:'peace',         label:{ EN:'🕊️ Inner Peace & Joy',      ID:'🕊️ Kedamaian Batin & Sukacita'  } },
     ],
   },
   {
@@ -473,13 +480,13 @@ const QUESTIONS = [
     teaser:{ EN:'The quiet voice in your soul is speaking your Blueprint right now.', ID:'Suara tenang dalam jiwamu sedang mengucapkan Blueprintmu saat ini.' },
     text:{ EN:"When you're alone and quiet — perhaps in prayer — what do you feel most strongly?", ID:'Ketika kamu sendirian dan tenang — mungkin dalam doa — apa yang paling kuat kamu rasakan?' },
     options:[
-      { label:{ EN:'A deep desire to create or build something for God', ID:'Keinginan yang dalam untuk menciptakan atau membangun sesuatu bagi Tuhan' }, type:'BUILDER' },
-      { label:{ EN:'Compassion — my heart breaks for people who are hurting', ID:'Belas kasihan — hatiku hancur untuk orang-orang yang terluka' }, type:'HEALER' },
-      { label:{ EN:'A longing to know and understand God more deeply', ID:'Kerinduan untuk mengenal dan memahami Tuhan lebih dalam' }, type:'SEEKER' },
-      { label:{ EN:'A calling to watch over and care for specific people in my life', ID:'Panggilan untuk menjaga dan merawat orang-orang tertentu dalam hidupku' }, type:'SHEPHERD' },
-      { label:{ EN:'A burning urgency — like something needs to move and happen', ID:'Urgensi yang membara — seperti sesuatu harus bergerak dan terjadi' }, type:'CATALYST' },
-      { label:{ EN:"Awe at God's beauty and a deep desire to express it", ID:'Kekaguman pada keindahan Tuhan dan keinginan dalam untuk mengekspresikannya' }, type:'CREATOR' },
-      { label:{ EN:"Quiet gratitude for His faithfulness — a peace that anchors me", ID:'Rasa syukur yang tenang atas kesetiaan-Nya — kedamaian yang menjangkarkanku' }, type:'ANCHOR' },
+      { icon:'🏛️', short:{ EN:'Build for God',       ID:'Membangun bagi Tuhan'        }, label:{ EN:'A deep desire to create or build something for God',              ID:'Keinginan yang dalam untuk menciptakan atau membangun sesuatu bagi Tuhan' }, type:'BUILDER'  },
+      { icon:'💚', short:{ EN:'Deep compassion',     ID:'Belas kasihan mendalam'      }, label:{ EN:'Compassion — my heart breaks for people who are hurting',         ID:'Belas kasihan — hatiku hancur untuk orang-orang yang terluka'            }, type:'HEALER'   },
+      { icon:'🔍', short:{ EN:'Know God deeper',     ID:'Mengenal Tuhan lebih dalam'  }, label:{ EN:'A longing to know and understand God more deeply',                ID:'Kerinduan untuk mengenal dan memahami Tuhan lebih dalam'                 }, type:'SEEKER'   },
+      { icon:'🌿', short:{ EN:'Watch over others',   ID:'Jaga orang-orang'            }, label:{ EN:'A calling to watch over and care for specific people in my life', ID:'Panggilan untuk menjaga dan merawat orang-orang tertentu dalam hidupku'  }, type:'SHEPHERD' },
+      { icon:'🔥', short:{ EN:'Burning urgency',     ID:'Urgensi membara'             }, label:{ EN:'A burning urgency — like something needs to move and happen',     ID:'Urgensi yang membara — seperti sesuatu harus bergerak dan terjadi'       }, type:'CATALYST' },
+      { icon:'✨', short:{ EN:"Awe at God's beauty", ID:'Kagum akan keindahan-Nya'    }, label:{ EN:"Awe at God's beauty and a deep desire to express it",            ID:'Kekaguman pada keindahan Tuhan dan keinginan dalam untuk mengekspresikannya' }, type:'CREATOR' },
+      { icon:'⚓', short:{ EN:'Quiet gratitude',     ID:'Rasa syukur yang tenang'     }, label:{ EN:"Quiet gratitude for His faithfulness — a peace that anchors me",  ID:'Rasa syukur yang tenang atas kesetiaan-Nya — kedamaian yang menjangkarkanku' }, type:'ANCHOR' },
     ],
   },
   {
@@ -566,6 +573,16 @@ function ProgressBar({ current, total, lang }) {
 // ─── LANDING ──────────────────────────────────────────────────────────────────
 function Landing({ lang, onStart }) {
   const tx = T[lang]
+  // Detect if user arrived via a WhatsApp share link (?ref=TYPE)
+  const [referrerType, setReferrerType] = useState(null)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const ref = new URLSearchParams(window.location.search).get('ref')
+      if (ref && TYPES[ref.toUpperCase()]) setReferrerType(ref.toUpperCase())
+    }
+  }, [])
+  const refType = referrerType ? TYPES[referrerType] : null
+
   return (
     <div style={wrap}>
       {/* ── Hero ── */}
@@ -574,6 +591,18 @@ function Landing({ lang, onStart }) {
         <div style={{ position:'absolute', top:-60, right:-60, width:200, height:200, borderRadius:'50%', background:'rgba(245,158,11,0.07)', pointerEvents:'none' }} />
         <div style={{ position:'absolute', bottom:-40, left:-40, width:160, height:160, borderRadius:'50%', background:'rgba(255,255,255,0.04)', pointerEvents:'none' }} />
         <div style={{ maxWidth:500, margin:'0 auto', position:'relative' }}>
+          {/* WhatsApp referral banner */}
+          {refType && (
+            <div className="bubble-in" style={{ background:'rgba(37,211,102,0.12)', border:'1px solid rgba(37,211,102,0.3)', borderRadius:14, padding:'10px 16px', marginBottom:20, display:'flex', alignItems:'center', gap:10, justifyContent:'center' }}>
+              <span style={{ fontSize:22 }}>{refType.emoji}</span>
+              <p style={{ margin:0, fontSize:13, color:'rgba(255,255,255,0.82)', lineHeight:1.45 }}>
+                {lang==='EN'
+                  ? <>A friend discovered they're <strong style={{ color:'#4ADE80' }}>{refType.name.EN}</strong>. What's yours?</>
+                  : <>Temanmu menemukan mereka adalah <strong style={{ color:'#4ADE80' }}>{refType.name.ID}</strong>. Milikmu apa?</>
+                }
+              </p>
+            </div>
+          )}
           <div className="float" style={{ fontSize:48, marginBottom:14 }}>✝️</div>
           <span style={{ display:'inline-block', background:'rgba(245,158,11,0.18)', border:'1px solid rgba(245,158,11,0.4)', borderRadius:20, padding:'5px 14px', fontSize:11, fontWeight:700, color:C.gold, letterSpacing:1, marginBottom:18 }}>
             {tx.badge}
@@ -703,47 +732,93 @@ function Landing({ lang, onStart }) {
 // ─── MC QUESTION ──────────────────────────────────────────────────────────────
 function MCQuestion({ q, qIndex, total, selected, onSelect, onNext, lang }) {
   const tx = T[lang]
+  const advancingRef = useRef(false)
+
+  // Reset advancing guard when question changes
+  useEffect(() => { advancingRef.current = false }, [qIndex])
+
+  const handleSelect = (type) => {
+    if (advancingRef.current) return
+    advancingRef.current = true
+    onSelect(type)
+    setTimeout(onNext, 440)
+  }
+
+  const pct = Math.round(((qIndex + 1) / total) * 100)
+  const isLast = (q.options.length % 2 !== 0)
+
   return (
-    <div style={wrap}>
-      <ProgressBar current={qIndex+1} total={total} lang={lang} />
-      <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
-        <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>
-          {tx.qOf(qIndex+1, total)}
-        </p>
+    <div style={{ minHeight:'100vh', background:`linear-gradient(160deg, #0A1628 0%, #0D1B4B 55%, #122060 100%)`, display:'flex', flexDirection:'column', fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif' }}>
+
+      {/* ── Progress bar ── */}
+      <div style={{ padding:'14px 20px 0', flexShrink:0 }}>
+        <div style={{ maxWidth:520, margin:'0 auto' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
+            <span style={{ fontSize:11, color:'rgba(245,158,11,0.85)', fontWeight:700, letterSpacing:0.5 }}>{tx.qOf(qIndex+1, total)}</span>
+            <span style={{ fontSize:11, color:'rgba(255,255,255,0.35)', fontWeight:600 }}>{tx.pct(pct)}</span>
+          </div>
+          <div style={{ height:3, background:'rgba(255,255,255,0.09)', borderRadius:2 }}>
+            <div style={{ height:3, width:`${pct}%`, background:`linear-gradient(90deg, #F59E0B, #D97706)`, borderRadius:2, transition:'width .55s cubic-bezier(.4,0,.2,1)' }} />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Content ── */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'center', padding:'20px 20px 32px', maxWidth:520, margin:'0 auto', width:'100%' }}>
+
+        {/* Guide avatar */}
+        <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:14, justifyContent:'center' }}>
+          <div style={{ width:26, height:26, borderRadius:'50%', background:'rgba(245,158,11,0.12)', border:'1.5px solid rgba(245,158,11,0.3)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13 }}>✝️</div>
+          <span style={{ fontSize:11, color:'rgba(255,255,255,0.35)', fontWeight:600, letterSpacing:0.3 }}>{lang==='EN' ? 'Blueprint Guide' : 'Panduan Blueprint'}</span>
+        </div>
+
+        {/* Teaser */}
         {q.teaser?.[lang] && (
-          <p className="au" style={{ fontSize:14, color:C.muted, fontStyle:'italic', margin:'0 0 14px', lineHeight:1.5 }}>
+          <p className="au" style={{ fontSize:13, color:'rgba(245,158,11,0.65)', fontStyle:'italic', margin:'0 0 11px', lineHeight:1.5, textAlign:'center' }}>
             ✨ {q.teaser[lang]}
           </p>
         )}
-        <h2 className="au af1" style={{ fontSize:23, fontWeight:800, color:C.navy, lineHeight:1.35, margin:'0 0 24px' }}>
+
+        {/* Question */}
+        <h2 className="au af1" style={{ fontSize:21, fontWeight:800, color:'#fff', lineHeight:1.4, margin:'0 0 22px', textAlign:'center', letterSpacing:-0.2 }}>
           {q.text[lang]}
         </h2>
-        <div>
+
+        {/* 2-column icon grid */}
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:9 }}>
           {q.options.map((opt, i) => (
             <div
               key={i}
-              className={`opt-card${selected === opt.type ? ' sel' : ''}`}
-              onClick={() => onSelect(opt.type)}
+              className={`opt-icon${selected === opt.type ? ' sel' : ''}`}
+              onClick={() => handleSelect(opt.type)}
               style={{
-                display:'flex', alignItems:'center', gap:12,
-                padding:'14px 18px', marginBottom:10,
-                background: selected===opt.type ? C.navyDark : '#fff',
-                color: selected===opt.type ? '#fff' : C.text,
-                border: `2px solid ${selected===opt.type ? C.gold : C.border}`,
-                borderRadius:12, fontSize:15, fontWeight: selected===opt.type ? 600 : 400,
-                borderLeft: `4px solid ${selected===opt.type ? C.gold : C.border}`,
+                padding:'15px 10px 13px',
+                background: selected===opt.type ? 'rgba(245,158,11,0.17)' : 'rgba(255,255,255,0.07)',
+                borderRadius:13,
+                textAlign:'center',
+                border:`2px solid ${selected===opt.type ? '#F59E0B' : 'rgba(255,255,255,0.11)'}`,
+                gridColumn: (isLast && i === q.options.length - 1) ? 'span 2' : 'auto',
+                animation:`fadeUp 0.28s ease ${i * 0.035}s both`,
+                WebkitTapHighlightColor:'transparent',
+                userSelect:'none',
               }}
             >
-              <span style={{ flex:1, lineHeight:1.5 }}>{opt.label[lang]}</span>
-              {selected===opt.type && <span style={{ fontSize:18, flexShrink:0 }}>✓</span>}
+              <div style={{ fontSize:26, marginBottom:6, lineHeight:1 }}>{opt.icon || '●'}</div>
+              <p style={{ margin:0, fontSize:12, fontWeight:600, lineHeight:1.4, color: selected===opt.type ? '#F59E0B' : 'rgba(255,255,255,0.8)' }}>
+                {opt.short ? opt.short[lang] : opt.label[lang]}
+              </p>
+              {selected===opt.type && <div style={{ marginTop:5, color:'#F59E0B', fontSize:13, fontWeight:900 }}>✓</div>}
             </div>
           ))}
         </div>
-        {selected && (
-          <button className="au" onClick={onNext} style={{ ...primBtn, marginTop:12 }}>
-            {qIndex+1===total ? tx.seeResults : tx.continue}
-          </button>
-        )}
+
+        {/* Hint */}
+        <p style={{ textAlign:'center', fontSize:11, color:'rgba(255,255,255,0.22)', marginTop:14, fontStyle:'italic' }}>
+          {selected
+            ? (lang==='EN' ? '✓ Noted — revealing next clue…' : '✓ Dicatat — mengungkap petunjuk berikutnya…')
+            : (lang==='EN' ? 'Tap to choose' : 'Ketuk untuk memilih')
+          }
+        </p>
       </div>
     </div>
   )
@@ -975,28 +1050,67 @@ function GateScreen({ lang, onSubmit, submitting, error }) {
 
 // ─── LOADING / REVEAL SCREEN ──────────────────────────────────────────────────
 function LoadingScreen({ purposeType, lang, onDone }) {
-  const tx = T[lang]
   const type = TYPES[purposeType]
+  const [phase, setPhase] = useState(0) // 0=analysis 1=emoji-reveal 2=name-reveal
   const [lineIdx, setLineIdx] = useState(0)
   const [dots, setDots] = useState('.')
 
+  const analysisLines = lang === 'EN'
+    ? ['Reading your answers…', 'Tracing your passions…', 'Searching 7 sacred patterns…', 'Your Blueprint is forming…']
+    : ['Membaca jawabanmu…', 'Melacak hasratmu…', 'Mencari 7 pola ilahi…', 'Blueprintmu sedang terbentuk…']
+
   useEffect(() => {
-    const t1 = setInterval(() => setLineIdx(i => (i+1) % tx.loadLines.length), 650)
-    const t2 = setInterval(() => setDots(d => d.length >= 3 ? '.' : d+'.'), 400)
-    const t3 = setTimeout(onDone, 2800)
-    return () => { clearInterval(t1); clearInterval(t2); clearTimeout(t3) }
+    const dotTimer   = setInterval(() => setDots(d => d.length >= 3 ? '.' : d+'.'), 380)
+    const lineTimer  = setInterval(() => setLineIdx(i => (i + 1) % analysisLines.length), 700)
+    const phase1     = setTimeout(() => { clearInterval(lineTimer); setPhase(1) }, 3000)
+    const phase2     = setTimeout(() => setPhase(2), 4100)
+    const done       = setTimeout(onDone, 5400)
+    return () => { clearInterval(dotTimer); clearInterval(lineTimer); clearTimeout(phase1); clearTimeout(phase2); clearTimeout(done) }
   }, [])
 
   return (
-    <div style={{ minHeight:'100vh', background:`linear-gradient(155deg,${C.navyDark} 0%,${C.navy} 60%,#1E3A7A 100%)`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:24, textAlign:'center', fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif' }}>
-      <div className="float" style={{ fontSize:72, marginBottom:20 }}>{type.emoji}</div>
-      <div style={{ width:48, height:48, border:`3px solid rgba(245,158,11,0.3)`, borderTop:`3px solid ${C.gold}`, borderRadius:'50%', animation:'spin 0.9s linear infinite', marginBottom:28 }} />
-      <p style={{ color:C.gold, fontSize:16, fontWeight:600, minHeight:24, marginBottom:8 }}>
-        {tx.loadLines[lineIdx]}{dots}
-      </p>
-      <p style={{ color:'rgba(255,255,255,0.4)', fontSize:13 }}>
-        {lang==='EN' ? 'Almost there…' : 'Sebentar lagi…'}
-      </p>
+    <div style={{ minHeight:'100vh', background:`linear-gradient(155deg, #0A1628 0%, #0F2167 60%, #1E3A7A 100%)`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:24, textAlign:'center', fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif' }}>
+
+      {/* Phase 0: Analysis */}
+      {phase === 0 && (
+        <>
+          <div style={{ fontSize:44, marginBottom:22, opacity:0.35 }}>✝️</div>
+          <div style={{ width:46, height:46, border:`3px solid rgba(245,158,11,0.2)`, borderTop:`3px solid #F59E0B`, borderRadius:'50%', animation:'spin 0.9s linear infinite', marginBottom:26 }} />
+          <p style={{ color:'#F59E0B', fontSize:15, fontWeight:600, minHeight:22, marginBottom:10 }}>
+            {analysisLines[lineIdx]}{dots}
+          </p>
+          <p style={{ color:'rgba(255,255,255,0.3)', fontSize:13 }}>
+            {lang==='EN' ? 'This might change everything.' : 'Ini mungkin akan mengubah segalanya.'}
+          </p>
+        </>
+      )}
+
+      {/* Phase 1: Emoji reveal */}
+      {phase === 1 && (
+        <div className="bubble-in" style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
+          <div className="float" style={{ fontSize:96, marginBottom:22, filter:'drop-shadow(0 0 32px rgba(245,158,11,0.4))' }}>{type.emoji}</div>
+          <div style={{ width:38, height:38, border:`2.5px solid rgba(245,158,11,0.25)`, borderTop:`2.5px solid #F59E0B`, borderRadius:'50%', animation:'spin 0.9s linear infinite' }} />
+        </div>
+      )}
+
+      {/* Phase 2: Full reveal */}
+      {phase === 2 && (
+        <div className="bubble-in" style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
+          <div className="float" style={{ fontSize:80, marginBottom:18, filter:'drop-shadow(0 0 28px rgba(245,158,11,0.45))' }}>{type.emoji}</div>
+          <p style={{ color:'rgba(255,255,255,0.45)', fontSize:11, fontWeight:700, letterSpacing:2, textTransform:'uppercase', marginBottom:12 }}>
+            {lang==='EN' ? 'YOUR BIBLICAL BLUEPRINT' : 'BIBLICAL BLUEPRINT-MU'}
+          </p>
+          <h2 style={{ color:'#F59E0B', fontSize:38, fontWeight:900, margin:'0 0 8px', letterSpacing:-0.5, animation:'fadeUp 0.45s ease both' }}>
+            {type.name[lang]}
+          </h2>
+          <p style={{ color:'rgba(255,255,255,0.55)', fontSize:17, margin:'0 0 6px', animation:'fadeUp 0.45s ease 0.1s both' }}>
+            {type.subtitle[lang]}
+          </p>
+          <p style={{ color:'rgba(255,255,255,0.28)', fontSize:13, fontStyle:'italic', marginTop:18, animation:'fadeUp 0.45s ease 0.2s both' }}>
+            {lang==='EN' ? 'Preparing your full report…' : 'Menyiapkan laporan lengkapmu…'}
+          </p>
+        </div>
+      )}
     </div>
   )
 }

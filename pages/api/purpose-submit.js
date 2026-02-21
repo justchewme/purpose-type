@@ -27,10 +27,14 @@ const TYPE_NAMES = {
 
 const RATING_EMOJI = ['','😔','😕','😐','🙂','😄']
 
+const NOTIFY_EMAILS = [
+  'elearning@equippedministries.org',
+  'justchewme@gmail.com',
+]
+
 async function notifyEmail(lead) {
   const apiKey = process.env.RESEND_API_KEY
-  const toEmail = process.env.NOTIFY_EMAIL
-  if (!apiKey || !toEmail) return
+  if (!apiKey) return
 
   const resend = new Resend(apiKey)
   const time = new Date(lead.submittedAt).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' })
@@ -142,8 +146,8 @@ async function notifyEmail(lead) {
 
   await resend.emails.send({
     from: 'Blueprint Quiz <onboarding@resend.dev>',
-    to: [toEmail],
-    subject: `🎯 ${lead.name} is ${typeName} — ${lead.openToMeet === 'yes' ? '✅ Open to meet!' : lead.openToMeet === 'maybe' ? '🤔 Maybe open' : 'Not meeting'}`,
+    to: NOTIFY_EMAILS,
+    subject: `New Form Signed Up - Justin GSN's App — ${lead.name} (${typeName})`,
     html,
   })
 }

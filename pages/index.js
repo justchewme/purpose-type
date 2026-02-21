@@ -137,7 +137,7 @@ const TYPES = {
     },
   },
   ANCHOR: {
-    id:'ANCHOR', emoji:'⚓', rarity:12, color:'#14532D', bg:'#DCFCE7', barColor:'#059669',
+    id:'ANCHOR', emoji:'⚓', rarity:12, color:'#134E4A', bg:'#CCFBF1', barColor:'#0D9488',
     verse:'Ruth 1:16', verseID:'Rut 1:16',
     name:      { EN:'The Anchor', ID:'Sang Jangkar' },
     subtitle:  { EN:'Like Ruth',  ID:'Seperti Rut' },

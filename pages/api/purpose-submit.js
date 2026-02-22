@@ -432,10 +432,11 @@ async function handlePost(req, res) {
   leads.unshift(lead)
   if (leads.length > 1000) leads.pop()
 
-  // Fire-and-forget: email + Airtable + optional Google Sheet
-  notifyEmail(lead).catch(() => {})
-  appendToAirtable(lead).catch(() => {})
-  appendToSheet(lead).catch(() => {})
+  // Airtable is primary store — must complete before responding
+  try { await appendToAirtable(lead) } catch (e) { console.error('Airtable write failed:', e.message) }
+  // Email + Sheets are secondary, fire-and-forget
+  notifyEmail(lead).catch(e => console.error('Email failed:', e.message))
+  appendToSheet(lead).catch(e => console.error('Sheets failed:', e.message))
 
   return res.status(200).json({ ok: true, id: lead.id })
 }
@@ -491,11 +492,11 @@ async function handleGet(req, res) {
   if (!adminToken || adminToken !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
-  // Use in-memory if available, otherwise fetch from Airtable
-  if (leads.length > 0) {
-    leads.forEach(l => { l.read = true })
-    return res.status(200).json({ leads })
-  }
+  // Always fetch from Airtable for persistent data, merge with in-memory for newest entries
   const airtableLeads = await fetchLeadsFromAirtable()
-  return res.status(200).json({ leads: airtableLeads })
+  // Merge: add any in-memory leads that aren't in Airtable (submitted during this warm instance)
+  const airtableWAs = new Set(airtableLeads.map(l => l.wa))
+  const freshLeads = leads.filter(l => !airtableWAs.has(l.wa))
+  const allLeads = [...freshLeads, ...airtableLeads]
+  return res.status(200).json({ leads: allLeads })
 }

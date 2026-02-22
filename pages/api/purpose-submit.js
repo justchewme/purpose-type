@@ -208,6 +208,7 @@ const AIRTABLE_FIELDS = [
   { name: 'Name',                       type: 'singleLineText' },
   { name: 'WhatsApp',                   type: 'singleLineText' },
   { name: 'Email',                      type: 'email' },
+  { name: 'City',                        type: 'singleLineText' },
   { name: 'Blueprint',                  type: 'singleLineText' },
   { name: 'Faith Journey',              type: 'singleLineText' },
   { name: 'Church Status',              type: 'singleLineText' },
@@ -256,6 +257,7 @@ async function appendToAirtable(lead) {
     'Name':                       lead.name,
     'WhatsApp':                   lead.wa,
     'Email':                      lead.email || '',
+    'City':                       lead.city || '',
     'Blueprint':                  lead.purposeType,
     'Faith Journey':              lead.faithJourney || '',
     'Church Status':              lead.churchStatus || '',
@@ -307,7 +309,7 @@ async function updateEncounterInAirtable(wa) {
 
 // ─── GOOGLE SHEETS (optional, silent fail if not configured) ──────────────────
 const SHEET_HEADERS = [
-  'ID', 'Submitted At (SGT)', 'Name', 'WhatsApp', 'Email',
+  'ID', 'Submitted At (SGT)', 'Name', 'WhatsApp', 'Email', 'City',
   'Blueprint', 'Faith Journey', 'Church Status', 'Open to Meet',
   'Availability', 'Encounter Requested',
   'Career /5', 'Relationships /5', 'Faith /5', 'Peace /5',
@@ -334,7 +336,7 @@ function getSheetClient() {
 
 async function ensureHeaders(sheets, sheetId) {
   try {
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: 'Sheet1!A1:P1' })
+    const res = await sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: 'Sheet1!A1:Q1' })
     const row = res.data.values?.[0]
     if (!row || row.length === 0) {
       await sheets.spreadsheets.values.update({
@@ -353,7 +355,7 @@ async function appendToSheet(lead) {
   const row = [
     lead.id,
     new Date(lead.submittedAt).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' }),
-    lead.name, lead.wa, lead.email || '',
+    lead.name, lead.wa, lead.email || '', lead.city || '',
     lead.purposeType, lead.faithJourney || '', lead.churchStatus || '',
     lead.openToMeet || '', (lead.availability || []).join(', '),
     lead.encounterRequested ? 'YES' : 'no',
@@ -378,7 +380,7 @@ async function updateEncounterInSheet(wa) {
     const rowIndex = rows.findIndex((r, i) => i > 0 && r[0] === wa)
     if (rowIndex === -1) return
     await sheets.spreadsheets.values.update({
-      spreadsheetId: sheetId, range: `Sheet1!K${rowIndex + 1}`,
+      spreadsheetId: sheetId, range: `Sheet1!L${rowIndex + 1}`,
       valueInputOption: 'RAW', requestBody: { values: [['YES']] },
     })
   } catch (e) { console.warn('Could not update encounter in sheet:', e.message) }
@@ -404,7 +406,7 @@ async function handlePost(req, res) {
     return res.status(200).json({ ok: true })
   }
 
-  const { name, wa, email, faithJourney, churchStatus, openToMeet, availability, purposeType, ratings, answers } = body
+  const { name, wa, email, city, faithJourney, churchStatus, openToMeet, availability, purposeType, ratings, answers } = body
   if (!name || !wa || !purposeType) {
     return res.status(400).json({ error: 'Missing required fields.' })
   }
@@ -414,6 +416,7 @@ async function handlePost(req, res) {
     name: String(name).trim().slice(0, 100),
     wa: String(wa).trim().slice(0, 20),
     email: email ? String(email).trim().slice(0, 200) : null,
+    city: city || null,
     faithJourney: faithJourney || null,
     churchStatus: churchStatus || null,
     openToMeet: openToMeet || null,

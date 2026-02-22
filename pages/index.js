@@ -216,6 +216,18 @@ const T = {
     waPriv: '🔒 Only used to send your report. Never shared.',
     fldEmail: 'Email (optional)',
     phEmail: 'yourname@email.com',
+    secCity: '📍 Where Are You Based?',
+    cityHint: 'We currently offer spiritual encounters in the Batam area.',
+    cityOpts: [
+      { v:'batam', label:'Batam' },
+      { v:'tanjung-pinang', label:'Tanjung Pinang' },
+      { v:'bintan', label:'Bintan' },
+      { v:'karimun', label:'Karimun' },
+      { v:'other-kepri', label:'Other (Kepulauan Riau)' },
+      { v:'other-indonesia', label:'Elsewhere in Indonesia' },
+      { v:'outside', label:'Outside Indonesia' },
+    ],
+    cityNotAvail: "We\u2019re not in your area yet \u2014 but God\u2019s timing is perfect. We\u2019ll let you know when we expand to your city.",
     secFaith: '✝️ Your Faith Journey',
     faithHint: 'Where are you right now? (Choose the one that fits most)',
     faithOpts: [
@@ -339,6 +351,18 @@ const T = {
     waPriv: '🔒 Hanya digunakan untuk mengirim laporanmu. Tidak pernah dibagikan.',
     fldEmail: 'Email (opsional)',
     phEmail: 'namamu@email.com',
+    secCity: '📍 Kamu Tinggal di Mana?',
+    cityHint: 'Saat ini kami menawarkan perjumpaan rohani di area Batam.',
+    cityOpts: [
+      { v:'batam', label:'Batam' },
+      { v:'tanjung-pinang', label:'Tanjung Pinang' },
+      { v:'bintan', label:'Bintan' },
+      { v:'karimun', label:'Karimun' },
+      { v:'other-kepri', label:'Lainnya (Kepulauan Riau)' },
+      { v:'other-indonesia', label:'Di tempat lain di Indonesia' },
+      { v:'outside', label:'Di luar Indonesia' },
+    ],
+    cityNotAvail: 'Kami belum ada di areamu \u2014 tapi waktu Tuhan selalu sempurna. Kami akan kabari ketika kami hadir di kotamu.',
     secFaith: '✝️ Perjalanan Imanmu',
     faithHint: 'Di mana kamu sekarang? (Pilih yang paling sesuai)',
     faithOpts: [
@@ -960,19 +984,22 @@ function GateScreen({ lang, onSubmit, submitting, error }) {
   const [email, setEmail] = useState('')
   const [faithJourney, setFJ] = useState('')
   const [churchStatus, setCS] = useState('')
+  const [city, setCity]       = useState('')
   const [openToMeet, setOM]   = useState('')
   const [avail, setAvail]     = useState([])
   const [waErr, setWaErr]     = useState('')
   const toggleAvail = v => setAvail(prev => prev.includes(v) ? prev.filter(x=>x!==v) : [...prev,v])
+  const batamArea = ['batam','tanjung-pinang','bintan','karimun']
+  const isBatam = batamArea.includes(city)
 
   const handleSubmit = () => {
     setWaErr('')
     if (!name.trim()) return
     if (!validateIndonesianWA(wa)) { setWaErr(tx.waErr); return }
-    if (!faithJourney||!churchStatus||!openToMeet) return
-    onSubmit({ name:name.trim(), wa:normalizeWA(wa), email:email.trim(), faithJourney, churchStatus, openToMeet, availability:avail })
+    if (!city||!faithJourney||!churchStatus||!openToMeet) return
+    onSubmit({ name:name.trim(), wa:normalizeWA(wa), email:email.trim(), city, faithJourney, churchStatus, openToMeet, availability:avail })
   }
-  const allFilled = name.trim() && wa.trim() && faithJourney && churchStatus && openToMeet
+  const allFilled = name.trim() && wa.trim() && city && faithJourney && churchStatus && openToMeet
 
   const inp = { width:'100%', boxSizing:'border-box', padding:'13px 15px', fontSize:16, border:`2px solid ${C.border}`, borderRadius:11, background:'#fff', color:C.text, fontFamily:'inherit', outline:'none' }
   const lbl = { fontSize:14, fontWeight:700, color:C.text, display:'block', marginBottom:6, marginTop:16 }
@@ -1009,6 +1036,21 @@ function GateScreen({ lang, onSubmit, submitting, error }) {
           <p style={{ fontSize:12, color:C.muted, marginTop:5 }}>{tx.waPriv}</p>
           <label style={lbl}>{tx.fldEmail}</label>
           <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={tx.phEmail} style={inp} />
+        </div>
+        {/* City */}
+        <div style={sec}>
+          <p style={secHead}>{tx.secCity}</p>
+          <p style={{ fontSize:13, color:C.muted, margin:'-6px 0 14px' }}>{tx.cityHint}</p>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+            {tx.cityOpts.map(({ v, label }) => (
+              <button key={v} style={{ ...optBtn(city===v), gridColumn: v==='other-indonesia'||v==='outside' ? 'span 2' : 'auto' }} onClick={()=>setCity(v)}>{label}</button>
+            ))}
+          </div>
+          {city && !isBatam && (
+            <div style={{ background:'#FEF3C7', border:'1px solid #FDE68A', borderRadius:10, padding:'14px 16px', marginTop:12, marginBottom:6 }}>
+              <p style={{ fontSize:14, color:'#92400E', lineHeight:1.6, margin:0 }}>{tx.cityNotAvail}</p>
+            </div>
+          )}
         </div>
         {/* Faith */}
         <div style={sec}>
@@ -1237,8 +1279,8 @@ function ResultsScreen({ purposeType, name, ratings, answers, gateData, onEncoun
           </div>
         )}
 
-        {/* Encounter CTA — multi-step conviction flow */}
-        {!encounterRequested && (
+        {/* Encounter CTA — multi-step conviction flow (Batam area only) */}
+        {!encounterRequested && ['batam','tanjung-pinang','bintan','karimun'].includes(gateData?.city) && (
           <div className="au af4" style={{ background:`linear-gradient(155deg,${C.navyDark} 0%,#0B1A3B 100%)`, borderRadius:18, padding:'0', marginBottom:16, overflow:'hidden', boxShadow:'0 8px 36px rgba(10,22,40,0.35)' }}>
             {/* Step 1 — Conviction */}
             <div style={{ padding:'36px 24px 20px', textAlign:'center', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>

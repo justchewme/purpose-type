@@ -1146,12 +1146,12 @@ function RadarChart({ ratings, lang }) {
 function ResultsScreen({ purposeType, name, ratings, answers, gateData, onEncounterClick, encounterRequested, lang }) {
   const tx = T[lang]
   const type = TYPES[purposeType]
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://purpose-type.vercel.app'
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://mypurpose.vercel.app'
   const shareUrl = `${origin}/?ref=${purposeType.toLowerCase()}`
   const shareMsg = encodeURIComponent(
     lang==='EN'
-      ? `I just discovered I'm "${type.name.EN}" (${type.subtitle.EN}) — one of the 7 Biblical Purpose Types! Only ${type.rarity}% of people get this type.\n\nFind yours: ${shareUrl}`
-      : `Baru saja aku temukan aku adalah "${type.name.ID}" (${type.subtitle.ID}) — salah satu dari 7 Tipe Tujuan Alkitab! Hanya ${type.rarity}% orang mendapat tipe ini.\n\nTemukan milikmu: ${shareUrl}`
+      ? `I just discovered I'm "${type.name.EN}" (${type.subtitle.EN}) on MyPurpose — one of the 7 Biblical Blueprints! Only ${type.rarity}% of people get this type.\n\nFind yours free: ${shareUrl}`
+      : `Baru saja aku temukan aku adalah "${type.name.ID}" (${type.subtitle.ID}) di MyPurpose — salah satu dari 7 Biblical Blueprint! Hanya ${type.rarity}% orang mendapat tipe ini.\n\nTemukan milikmu gratis: ${shareUrl}`
   )
   const waShare = `https://wa.me/?text=${shareMsg}`
 
@@ -1338,9 +1338,9 @@ export default function Home() {
     <Head>
       <title>{title}</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="description" content="Discover the specific Biblical Blueprint God designed for your life — 7 types, free, 3 minutes." />
-      <meta property="og:title" content="Which of the 7 Biblical Blueprints Are You?" />
-      <meta property="og:description" content="God wired you differently. Discover your specific Biblical Blueprint — free, 3 minutes." />
+      <meta name="description" content="MyPurpose — Discover the specific Biblical Blueprint God designed for your life. 7 types, free, 3 minutes." />
+      <meta property="og:title" content="MyPurpose — Which of the 7 Biblical Blueprints Are You?" />
+      <meta property="og:description" content="God wired you differently. Discover your Biblical Blueprint on MyPurpose — free, 3 minutes." />
       <meta property="og:type" content="website" />
       <style>{GLOBAL_CSS}</style>
     </Head>
@@ -1349,8 +1349,8 @@ export default function Home() {
   return (
     <>
       {head(screen==='results' && purposeType
-        ? `I am ${TYPES[purposeType].name[lang]} — Biblical Blueprints`
-        : 'Which of the 7 Biblical Blueprints Are You?'
+        ? `I'm ${TYPES[purposeType].name[lang]} — MyPurpose`
+        : 'MyPurpose — Discover Your Biblical Blueprint'
       )}
       <LangToggle lang={lang} setLang={setLang} />
 

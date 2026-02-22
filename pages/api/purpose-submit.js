@@ -98,7 +98,7 @@ async function notifyEmail(lead) {
 
   <!-- Header -->
   <div style="background:linear-gradient(135deg,#0A1628 0%,#0F2167 100%);padding:26px 28px;text-align:center;">
-    <p style="color:#F59E0B;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin:0 0 5px;">New Blueprint Submission · ${time} SGT</p>
+    <p style="color:#F59E0B;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin:0 0 5px;">New MyPurpose Submission · ${time} SGT</p>
     <h1 style="color:#fff;font-size:26px;font-weight:900;margin:0 0 3px;">${lead.name}</h1>
     <p style="color:#F59E0B;font-size:17px;font-weight:700;margin:0;">${typeName}</p>
   </div>
@@ -150,16 +150,16 @@ async function notifyEmail(lead) {
   </div>
 
   <div style="padding:14px 28px;border-top:1px solid #E5E7EB;text-align:center;background:#F9FAFB;">
-    <p style="margin:0;font-size:11px;color:#9CA3AF;">Justin GSN's Blueprint App · purpose-type.vercel.app · ID: ${lead.id}</p>
+    <p style="margin:0;font-size:11px;color:#9CA3AF;">MyPurpose · mypurpose.vercel.app · ID: ${lead.id}</p>
   </div>
 </div>
 </body>
 </html>`
 
   await resend.emails.send({
-    from: 'Blueprint Quiz <onboarding@resend.dev>',
+    from: 'MyPurpose <onboarding@resend.dev>',
     to: NOTIFY_EMAILS,
-    subject: `New Form Signed Up - Justin GSN's App — ${lead.name} (${typeName})`,
+    subject: `New MyPurpose Submission — ${lead.name} (${typeName})`,
     html,
   })
 }

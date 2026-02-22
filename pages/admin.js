@@ -13,14 +13,38 @@ const TYPE_EMOJI = {
   CATALYST: '🔥', CREATOR: '✨', ANCHOR: '⚓',
 }
 
-const FAITH_LABEL = {
-  thriving: '🌱 Thriving', stuck: '😐 Stuck', questions: '❓ Questions',
-  away: '🚶 Away from church', exploring: '🔎 Exploring',
+const FAITH_LABELS = [
+  { match: 'thriving', emoji: '🌱', short: 'Thriving' },
+  { match: 'stuck',    emoji: '😐', short: 'Stuck' },
+  { match: 'questions', emoji: '❓', short: 'Questions' },
+  { match: 'stepped away', emoji: '🚶', short: 'Away from church' },
+  { match: 'explore',  emoji: '🔎', short: 'Exploring' },
+]
+
+const CHURCH_LABELS = [
+  { match: 'Actively involved', emoji: '⛪', short: 'Active' },
+  { match: 'occasionally',      emoji: '🕍', short: 'Occasional' },
+  { match: 'Looking for',       emoji: '🔍', short: 'Looking' },
+  { match: 'Not attending, but open', emoji: '🚶', short: 'Away, open' },
+  { match: 'Not currently',     emoji: '🚫', short: 'Not attending' },
+]
+
+function faithLabel(val) {
+  if (!val) return val
+  const found = FAITH_LABELS.find(f => val.toLowerCase().includes(f.match.toLowerCase()))
+  return found ? `${found.emoji} ${found.short}` : val
 }
 
-const CHURCH_LABEL = {
-  active: '⛪ Active', occasional: '🕍 Occasional', looking: '🔍 Looking',
-  away_open: '🚶 Away, open', away_closed: '🚫 Away, closed',
+function churchLabel(val) {
+  if (!val) return val
+  const found = CHURCH_LABELS.find(f => val.toLowerCase().includes(f.match.toLowerCase()))
+  return found ? `${found.emoji} ${found.short}` : val
+}
+
+function isSeeking(faithJourney) {
+  if (!faithJourney) return false
+  const s = faithJourney.toLowerCase()
+  return s.includes('stuck') || s.includes('questions') || s.includes('stepped away') || s.includes('explore')
 }
 
 export default function Admin() {
@@ -64,25 +88,25 @@ export default function Admin() {
   const filtered = leads.filter(l => {
     if (filter === 'encounter') return l.encounterRequested
     if (filter === 'evening') return l.availability?.includes('evenings')
-    if (filter === 'seeking') return ['stuck', 'questions', 'away', 'exploring'].includes(l.faithJourney)
+    if (filter === 'seeking') return isSeeking(l.faithJourney)
     if (filter === 'open') return ['yes', 'maybe'].includes(l.openToMeet)
     return true
   })
 
   const encounterCount = leads.filter(l => l.encounterRequested).length
   const eveningCount = leads.filter(l => l.availability?.includes('evenings')).length
-  const seekingCount = leads.filter(l => ['stuck', 'questions', 'away', 'exploring'].includes(l.faithJourney)).length
+  const seekingCount = leads.filter(l => isSeeking(l.faithJourney)).length
   const openCount = leads.filter(l => ['yes', 'maybe'].includes(l.openToMeet)).length
 
   const exportCSV = () => {
     const rows = [
-      ['ID', 'Name', 'WhatsApp', 'Email', 'Type', 'Faith', 'Church', 'Open to Meet', 'Available', 'Encounter', 'Q7 - Wish God showed', 'Q8 - Meaningful life', 'Career', 'Relationships', 'Faith Rating', 'Peace', 'Submitted'],
+      ['ID', 'Name', 'WhatsApp', 'Email', 'Type', 'Faith', 'Church', 'Open to Meet', 'Available', 'Encounter', 'Q7 - Wish God showed', 'Career', 'Relationships', 'Faith Rating', 'Peace', 'Submitted'],
       ...filtered.map(l => [
         l.id, l.name, l.wa, l.email || '',
         l.purposeType, l.faithJourney, l.churchStatus, l.openToMeet,
         (l.availability || []).join(' | '),
         l.encounterRequested ? 'YES' : 'no',
-        l.answers?.q7 || '', l.answers?.q8 || '',
+        l.answers?.q7 || '',
         l.ratings?.career || 0, l.ratings?.relationships || 0,
         l.ratings?.faith || 0, l.ratings?.peace || 0,
         new Date(l.submittedAt).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' }),
@@ -220,7 +244,7 @@ export default function Admin() {
                     <span style={{ fontSize: 12, color: C.muted }}>{lead.purposeType}</span>
                   </div>
                   <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>
-                    {FAITH_LABEL[lead.faithJourney] || lead.faithJourney} · {CHURCH_LABEL[lead.churchStatus] || lead.churchStatus}
+                    {faithLabel(lead.faithJourney)} · {churchLabel(lead.churchStatus)}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
@@ -288,12 +312,6 @@ export default function Admin() {
                     <div style={{ background: '#FDF6E3', borderRadius: 8, padding: '12px 14px', marginBottom: 10, border: '1px solid #F3D99A' }}>
                       <div style={{ fontSize: 11, fontWeight: 700, color: '#92600A', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>I wish God would show me...</div>
                       <div style={{ fontSize: 14, color: C.text, fontStyle: 'italic', lineHeight: 1.6 }}>"{lead.answers.q7}"</div>
-                    </div>
-                  )}
-                  {lead.answers?.q8 && (
-                    <div style={{ background: '#EDE9FE', borderRadius: 8, padding: '12px 14px', border: '1px solid #DDD6FE' }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: '#5B21B6', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>What would make life meaningful?</div>
-                      <div style={{ fontSize: 14, color: C.text, fontStyle: 'italic', lineHeight: 1.6 }}>"{lead.answers.q8}"</div>
                     </div>
                   )}
                 </div>

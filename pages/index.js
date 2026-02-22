@@ -188,6 +188,7 @@ const T = {
       { icon:'🕊️', text:'You stop feeling guilty for not being more like someone else. God made you to be you.' },
     ],
     typesHeading: 'The 7 Biblical Blueprints',
+    typesRarity: pct => `Only ${pct}% of people`,
     proofNum: '12,847',
     proofText: 'Christians across Southeast Asia have discovered their Blueprint',
     testimonials: [
@@ -310,6 +311,7 @@ const T = {
       { icon:'🕊️', text:'Kamu berhenti merasa bersalah karena tidak menjadi seperti orang lain. Tuhan membuatmu untuk menjadi dirimu.' },
     ],
     typesHeading: '7 Biblical Blueprint',
+    typesRarity: pct => `Hanya ${pct}% orang`,
     proofNum: '12.847',
     proofText: 'orang Kristen di Asia Tenggara telah menemukan Blueprint mereka',
     testimonials: [
@@ -418,7 +420,7 @@ const QUESTIONS = [
       { icon:'🏗️', short:{ EN:'Build things',     ID:'Membangun sesuatu'       }, label:{ EN:'An engineer, architect, or someone who builds things',        ID:'Seorang insinyur, arsitek, atau seseorang yang membangun sesuatu'     }, type:'BUILDER'  },
       { icon:'🩺', short:{ EN:'Heal people',      ID:'Menyembuhkan orang'      }, label:{ EN:'A doctor, nurse, or someone who heals people',                ID:'Dokter, perawat, atau seseorang yang menyembuhkan orang'             }, type:'HEALER'   },
       { icon:'📚', short:{ EN:'Explore ideas',    ID:'Menjelajahi ide'         }, label:{ EN:'A teacher, researcher, or explorer of ideas',                 ID:'Guru, peneliti, atau penjelajah ide'                                 }, type:'SEEKER'   },
-      { icon:'🤝', short:{ EN:'Guide others',     ID:'Membimbing orang lain'   }, label:{ EN:'A leader, pastor, or someone who guides others',              ID:'Pemimpin, pendeta, atau seseorang yang membimbing orang lain'        }, type:'SHEPHERD' },
+      { icon:'🤝', short:{ EN:'Guide others',     ID:'Membimbing orang lain'   }, label:{ EN:'A leader, mentor, or someone who guides others',             ID:'Pemimpin, mentor, atau seseorang yang membimbing orang lain'         }, type:'SHEPHERD' },
       { icon:'🚀', short:{ EN:'Make it happen',   ID:'Buat sesuatu terjadi'    }, label:{ EN:'An entrepreneur or someone who makes things happen',          ID:'Pengusaha atau seseorang yang membuat sesuatu terjadi'               }, type:'CATALYST' },
       { icon:'🎨', short:{ EN:'Create & express', ID:'Berkreasi'               }, label:{ EN:'An artist, musician, writer, or creative',                   ID:'Seniman, musisi, penulis, atau kreator'                             }, type:'CREATOR'  },
       { icon:'🏡', short:{ EN:'Stay faithful',    ID:'Tetap setia'             }, label:{ EN:'Someone faithful — close to family and deeply loyal',         ID:'Seseorang yang setia — dekat dengan keluarga dan sangat loyal'       }, type:'ANCHOR'   },
@@ -709,7 +711,7 @@ function Landing({ lang, onStart }) {
                 <div>
                   <div style={{ fontSize:13, fontWeight:800, color:tp.color }}>{tp.name[lang]}</div>
                   <div style={{ fontSize:11, color:tp.color, opacity:0.8 }}>{tp.subtitle[lang]}</div>
-                  <div style={{ fontSize:11, color:tp.color, opacity:0.65, marginTop:2 }}>Only {tp.rarity}% of people</div>
+                  <div style={{ fontSize:11, color:tp.color, opacity:0.65, marginTop:2 }}>{tx.typesRarity(tp.rarity)}</div>
                 </div>
               </div>
             ))}
@@ -724,7 +726,7 @@ function Landing({ lang, onStart }) {
           <button className="pulseCTA" onClick={onStart} style={{ ...goldBtn, maxWidth:380, margin:'0 auto' }}>
             {tx.cta}
           </button>
-          <p style={{ fontSize:12, color:C.muted, marginTop:14 }}>🇸🇬 Built by Christians in Singapore</p>
+          <p style={{ fontSize:12, color:C.muted, marginTop:14 }}>{tx.footer}</p>
         </div>
       </div>
     </div>
@@ -732,7 +734,7 @@ function Landing({ lang, onStart }) {
 }
 
 // ─── MC QUESTION ──────────────────────────────────────────────────────────────
-function MCQuestion({ q, qIndex, total, selected, onSelect, onNext, lang }) {
+function MCQuestion({ q, qIndex, total, selected, onSelect, onNext, onBack, lang }) {
   const tx = T[lang]
   const advancingRef = useRef(false)
 
@@ -755,7 +757,12 @@ function MCQuestion({ q, qIndex, total, selected, onSelect, onNext, lang }) {
       {/* ── Progress bar ── */}
       <div style={{ padding:'14px 20px 0', flexShrink:0 }}>
         <div style={{ maxWidth:520, margin:'0 auto' }}>
-          <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:5 }}>
+            {qIndex > 0 ? (
+              <button onClick={onBack} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:12, fontWeight:600, cursor:'pointer', padding:'4px 0', display:'flex', alignItems:'center', gap:4 }}>
+                ← {lang==='EN' ? 'Back' : 'Kembali'}
+              </button>
+            ) : <span />}
             <span style={{ fontSize:11, color:'rgba(245,158,11,0.85)', fontWeight:700, letterSpacing:0.5 }}>{tx.qOf(qIndex+1, total)}</span>
             <span style={{ fontSize:11, color:'rgba(255,255,255,0.35)', fontWeight:600 }}>{tx.pct(pct)}</span>
           </div>
@@ -827,7 +834,7 @@ function MCQuestion({ q, qIndex, total, selected, onSelect, onNext, lang }) {
 }
 
 // ─── RATING QUESTION ──────────────────────────────────────────────────────────
-function RatingQuestion({ q, qIndex, total, ratings, onRate, onNext, lang }) {
+function RatingQuestion({ q, qIndex, total, ratings, onRate, onNext, onBack, lang }) {
   const tx = T[lang]
   const allRated = q.areas.every(a => ratings[a.id] > 0)
   const EMOJIS = ['','😔','😕','😐','🙂','😄']
@@ -835,6 +842,11 @@ function RatingQuestion({ q, qIndex, total, ratings, onRate, onNext, lang }) {
     <div style={wrap}>
       <ProgressBar current={qIndex+1} total={total} lang={lang} />
       <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
+        {qIndex > 0 && (
+          <button onClick={onBack} style={{ background:'none', border:'none', color:C.muted, fontSize:13, fontWeight:600, cursor:'pointer', padding:'0 0 12px', display:'flex', alignItems:'center', gap:4 }}>
+            ← {lang==='EN' ? 'Back' : 'Kembali'}
+          </button>
+        )}
         <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>
           {tx.qOf(qIndex+1, total)}
         </p>
@@ -885,13 +897,18 @@ function RatingQuestion({ q, qIndex, total, ratings, onRate, onNext, lang }) {
 }
 
 // ─── OPEN TEXT QUESTION ───────────────────────────────────────────────────────
-function OpenTextQuestion({ q, qIndex, total, value, onChange, onNext, lang }) {
+function OpenTextQuestion({ q, qIndex, total, value, onChange, onNext, onBack, lang }) {
   const tx = T[lang]
   const ready = value.trim().length >= 3
   return (
     <div style={wrap}>
       <ProgressBar current={qIndex+1} total={total} lang={lang} />
       <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
+        {qIndex > 0 && (
+          <button onClick={onBack} style={{ background:'none', border:'none', color:C.muted, fontSize:13, fontWeight:600, cursor:'pointer', padding:'0 0 12px', display:'flex', alignItems:'center', gap:4 }}>
+            ← {lang==='EN' ? 'Back' : 'Kembali'}
+          </button>
+        )}
         <p className="ai" style={{ fontSize:12, color:C.gold, fontWeight:700, letterSpacing:1, textTransform:'uppercase', marginBottom:8 }}>
           {tx.qOf(qIndex+1, total)}
         </p>
@@ -1301,6 +1318,10 @@ export default function Home() {
     else setQIndex(i => i+1)
   }
 
+  const handleBack = () => {
+    if (qIndex > 0) setQIndex(i => i-1)
+  }
+
   const handleGateSubmit = async (data) => {
     setSubmitting(true)
     const { type } = scoreAnswers(answers)
@@ -1362,13 +1383,13 @@ export default function Home() {
       {screen==='landing' && <Landing lang={lang} onStart={handleStart} />}
 
       {screen==='quiz' && currentQ.type==='rating' && (
-        <RatingQuestion q={currentQ} qIndex={qIndex} total={totalQ} ratings={ratings} onRate={(a,v)=>setRatings(p=>({...p,[a]:v}))} onNext={handleNext} lang={lang} />
+        <RatingQuestion q={currentQ} qIndex={qIndex} total={totalQ} ratings={ratings} onRate={(a,v)=>setRatings(p=>({...p,[a]:v}))} onNext={handleNext} onBack={handleBack} lang={lang} />
       )}
       {screen==='quiz' && currentQ.type==='opentext' && (
-        <OpenTextQuestion q={currentQ} qIndex={qIndex} total={totalQ} value={answers[currentQ.id]||''} onChange={v=>setAnswers(p=>({...p,[currentQ.id]:v}))} onNext={handleNext} lang={lang} />
+        <OpenTextQuestion q={currentQ} qIndex={qIndex} total={totalQ} value={answers[currentQ.id]||''} onChange={v=>setAnswers(p=>({...p,[currentQ.id]:v}))} onNext={handleNext} onBack={handleBack} lang={lang} />
       )}
       {screen==='quiz' && !currentQ.type && (
-        <MCQuestion q={currentQ} qIndex={qIndex} total={totalQ} selected={answers[currentQ.id]||null} onSelect={handleAnswer} onNext={handleNext} lang={lang} />
+        <MCQuestion q={currentQ} qIndex={qIndex} total={totalQ} selected={answers[currentQ.id]||null} onSelect={handleAnswer} onNext={handleNext} onBack={handleBack} lang={lang} />
       )}
 
       {screen==='gate' && (

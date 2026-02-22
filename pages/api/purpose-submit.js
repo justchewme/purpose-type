@@ -165,6 +165,39 @@ async function notifyEmail(lead) {
   })
 }
 
+async function notifyEncounterEmail(name, wa, purposeType) {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return
+  const resend = new Resend(apiKey)
+  const typeName = TYPE_NAMES[purposeType] || purposeType || 'Unknown'
+  const waLink = `https://wa.me/${wa.replace(/\D/g,'')}`
+  const html = `
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#F3F4F6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<div style="max-width:480px;margin:24px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+  <div style="background:linear-gradient(135deg,#0A1628 0%,#0F2167 100%);padding:24px;text-align:center;">
+    <p style="color:#F59E0B;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:0 0 6px;">🕊️ Encounter Requested</p>
+    <h1 style="color:#fff;font-size:24px;font-weight:900;margin:0;">${name}</h1>
+    <p style="color:#F59E0B;font-size:15px;font-weight:700;margin:4px 0 0;">${typeName}</p>
+  </div>
+  <div style="padding:24px;text-align:center;">
+    <p style="font-size:15px;color:#374151;line-height:1.6;margin:0 0 20px;"><strong>${name}</strong> just clicked <strong>"I'm Ready"</strong> and is waiting to be contacted.</p>
+    <a href="${waLink}" style="display:inline-block;background:#25D366;color:#fff;font-size:15px;font-weight:700;padding:14px 32px;border-radius:12px;text-decoration:none;box-shadow:0 4px 16px rgba(37,211,102,0.35);">
+      💬 WhatsApp ${name} Now
+    </a>
+  </div>
+</div>
+</body></html>`
+
+  await resend.emails.send({
+    from: 'MyPurpose <onboarding@resend.dev>',
+    to: NOTIFY_EMAILS,
+    subject: `🕊️ Encounter Requested — ${name} (${typeName})`,
+    html,
+  })
+}
+
 // ─── AIRTABLE (optional, silent fail if not configured) ───────────────────────
 // Env vars: AIRTABLE_PAT, AIRTABLE_BASE_ID
 // PAT scopes needed: data.records:write  +  schema.bases:write
@@ -367,6 +400,7 @@ async function handlePost(req, res) {
     if (existing) existing.encounterRequested = true
     updateEncounterInSheet(body.wa).catch(() => {})
     updateEncounterInAirtable(body.wa).catch(() => {})
+    notifyEncounterEmail(body.name || existing?.name || 'Unknown', body.wa, existing?.purposeType).catch(() => {})
     return res.status(200).json({ ok: true })
   }
 

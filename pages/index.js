@@ -261,15 +261,16 @@ const T = {
     resGrowth: name => `Your Growth Edge, ${name}`,
     resWishTitle: 'You said you wish God would show you…',
     resWishClose: name => `That prayer matters, ${name}. It is not accidental that you carry that question.`,
-    encTitle: name => `God is not done writing your story, ${name}.`,
-    encBody: "Based on what you've shared, we believe there's someone God wants you to meet — not a pastor, not a salesman, but a real person who has walked a similar path.",
-    encWhatTitle: 'What is a Spiritual Encounter?',
-    encWhatBody: "A 1-on-1 conversation — over coffee or a meal — with someone who understands the journey you're on. No agenda. No pressure. Just real talk about faith, purpose, and what God might be doing in your life right now.",
-    encNudge: '"If you feel the nudge, say yes. God will take it from there."',
-    encCTA: '✝️ Yes — I am Open to a Spiritual Encounter',
-    encDoneTitle: name => `Thank you, ${name}.`,
-    encDoneBody: "Someone is being set apart for you. You'll receive a WhatsApp message within 24 hours from someone who shares a similar Blueprint and has a story worth hearing. Until then — keep seeking.",
-    noMeet: name => `We respect your space, ${name}. If you ever want to connect, we are always here. 🙏`,
+    encStep1: 'Be honest with yourself for a moment.',
+    encStep2: "You\u2019ve tried figuring it out on your own. The reading. The searching. The late-night prayers that feel like they hit the ceiling. But the emptiness hasn\u2019t left. The questions haven\u2019t gone away.",
+    encStep3: name => `${name}, you are so close.`,
+    encStep3Body: "Everything you\u2019ve shared \u2014 your answers, your longings, the areas where you\u2019re struggling \u2014 they reveal something. You are not lost. You are on the edge of a breakthrough. But you can\u2019t cross it alone.",
+    encTitle: name => `${name}, there is one step left.`,
+    encBody: "God doesn\u2019t just give you answers through an app. When the time is right, He sends someone. Someone anointed to speak into your life. Someone who carries what you\u2019ve been missing. This is not a coincidence \u2014 you were led here for a reason.",
+    encCTA: 'I\u2019m Ready',
+    encDoneTitle: name => `${name}, heaven has heard you.`,
+    encDoneBody: "Someone has been set apart for this very moment. You will receive a WhatsApp message within 24 hours. When they reach out \u2014 receive them. God does not send people by accident.",
+    noMeet: name => `We respect your space, ${name}. But know this \u2014 when the time is right, God will make a way. 🙏`,
     shareTitle: 'Share with your friends',
     shareSub: 'Let them discover their Biblical Blueprint too',
     shareWA: '📲 Share on WhatsApp',
@@ -382,15 +383,16 @@ const T = {
     resGrowth: name => `Area Pertumbuhanmu, ${name}`,
     resWishTitle: 'Kamu bilang kamu berharap Tuhan menunjukkan…',
     resWishClose: name => `Doa itu penting, ${name}. Bukan kebetulan kamu membawa pertanyaan itu.`,
-    encTitle: name => `Tuhan belum selesai menulis ceritamu, ${name}.`,
-    encBody: 'Berdasarkan yang kamu bagikan, kami percaya ada seseorang yang Tuhan ingin kamu temui — bukan pendeta, bukan salesman, tapi orang sungguhan yang pernah berjalan di jalan serupa.',
-    encWhatTitle: 'Apa itu Perjumpaan Rohani?',
-    encWhatBody: 'Percakapan 1-on-1 — sambil ngopi atau makan — dengan seseorang yang memahami perjalananmu. Tanpa agenda. Tanpa tekanan. Hanya obrolan jujur tentang iman, tujuan, dan apa yang mungkin Tuhan sedang kerjakan dalam hidupmu.',
-    encNudge: '"Kalau kamu merasakan dorongan itu, katakan ya. Tuhan akan mengurus sisanya."',
-    encCTA: '✝️ Ya — Aku Terbuka untuk Perjumpaan Rohani',
-    encDoneTitle: name => `Terima kasih, ${name}.`,
-    encDoneBody: 'Seseorang sedang disiapkan untukmu. Kamu akan menerima pesan WhatsApp dalam 24 jam dari seseorang yang memiliki Blueprint serupa dan kisah yang layak untuk didengar. Sampai saat itu — terus mencari.',
-    noMeet: name => `Kami menghormati ruangmu, ${name}. Jika kamu ingin terhubung, kami selalu ada. 🙏`,
+    encStep1: 'Jujurlah pada dirimu sendiri sejenak.',
+    encStep2: 'Kamu sudah mencoba mencari jawabannya sendiri. Membaca. Mencari. Berdoa larut malam yang terasa tak sampai. Tapi kekosongan itu belum pergi. Pertanyaan itu belum terjawab.',
+    encStep3: name => `${name}, kamu sudah sangat dekat.`,
+    encStep3Body: 'Semua yang kamu bagikan \u2014 jawabanmu, kerinduanmu, area di mana kamu berjuang \u2014 mengungkapkan sesuatu. Kamu tidak tersesat. Kamu ada di ambang terobosan. Tapi kamu tidak bisa melewatinya sendiri.',
+    encTitle: name => `${name}, ada satu langkah terakhir.`,
+    encBody: 'Tuhan tidak hanya memberimu jawaban lewat aplikasi. Ketika waktunya tepat, Dia mengutus seseorang. Seseorang yang diurapi untuk berbicara ke dalam hidupmu. Seseorang yang membawa apa yang selama ini kamu cari. Ini bukan kebetulan \u2014 kamu dituntun ke sini karena suatu alasan.',
+    encCTA: 'Aku Siap',
+    encDoneTitle: name => `${name}, surga telah mendengarmu.`,
+    encDoneBody: 'Seseorang telah disiapkan untuk saat ini. Kamu akan menerima pesan WhatsApp dalam 24 jam. Ketika mereka menghubungimu \u2014 terimalah. Tuhan tidak mengutus orang secara kebetulan.',
+    noMeet: name => `Kami menghormati ruangmu, ${name}. Tapi ketahuilah \u2014 ketika waktunya tepat, Tuhan akan membuka jalan. 🙏`,
     shareTitle: 'Bagikan ke temanmu',
     shareSub: 'Biarkan mereka menemukan Biblical Blueprint mereka juga',
     shareWA: '📲 Bagikan di WhatsApp',
@@ -1218,30 +1220,33 @@ function ResultsScreen({ purposeType, name, ratings, answers, gateData, onEncoun
           </div>
         )}
 
-        {/* Encounter CTA */}
-        {(gateData.openToMeet==='yes'||gateData.openToMeet==='maybe') && !encounterRequested && (
-          <div className="au af4" style={{ background:`linear-gradient(155deg,${C.navyDark} 0%,${C.navy} 100%)`, borderRadius:16, padding:'26px 22px', marginBottom:16, textAlign:'center', boxShadow:'0 6px 28px rgba(10,22,40,0.25)' }}>
-            <div className="float" style={{ fontSize:34, marginBottom:12 }}>🕊️</div>
-            <h3 style={{ color:'#fff', fontSize:20, fontWeight:800, margin:'0 0 12px', lineHeight:1.3 }}>{tx.encTitle(name)}</h3>
-            <p style={{ color:'rgba(255,255,255,0.78)', fontSize:14, lineHeight:1.65, margin:'0 0 18px' }}>{tx.encBody}</p>
-            <div style={{ background:'rgba(255,255,255,0.07)', borderRadius:11, padding:'14px 16px', marginBottom:20, textAlign:'left', border:'1px solid rgba(255,255,255,0.1)' }}>
-              <p style={{ color:C.gold, fontSize:14, fontWeight:700, margin:'0 0 6px' }}>{tx.encWhatTitle}</p>
-              <p style={{ color:'rgba(255,255,255,0.72)', fontSize:13, lineHeight:1.7, margin:0 }}>{tx.encWhatBody}</p>
+        {/* Encounter CTA — multi-step conviction flow */}
+        {!encounterRequested && (
+          <div className="au af4" style={{ background:`linear-gradient(155deg,${C.navyDark} 0%,#0B1A3B 100%)`, borderRadius:18, padding:'0', marginBottom:16, overflow:'hidden', boxShadow:'0 8px 36px rgba(10,22,40,0.35)' }}>
+            {/* Step 1 — Conviction */}
+            <div style={{ padding:'36px 24px 20px', textAlign:'center', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+              <p style={{ color:'rgba(255,255,255,0.45)', fontSize:13, fontWeight:600, letterSpacing:1.5, textTransform:'uppercase', margin:'0 0 18px' }}>✦ ✦ ✦</p>
+              <h3 style={{ color:'#fff', fontSize:22, fontWeight:800, margin:'0 0 16px', lineHeight:1.35 }}>{tx.encStep1}</h3>
+              <p style={{ color:'rgba(255,255,255,0.62)', fontSize:15, lineHeight:1.75, margin:0 }}>{tx.encStep2}</p>
             </div>
-            <p style={{ color:'rgba(255,255,255,0.5)', fontSize:13, fontStyle:'italic', margin:'0 0 18px' }}>{tx.encNudge}</p>
-            <button onClick={onEncounterClick} className="pulseCTA" style={{ ...goldBtn, fontSize:15 }}>{tx.encCTA}</button>
+            {/* Step 2 — You're so close */}
+            <div style={{ padding:'24px 24px 20px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+              <h3 style={{ color:C.gold, fontSize:20, fontWeight:800, margin:'0 0 12px', textAlign:'center', lineHeight:1.3 }}>{tx.encStep3(name)}</h3>
+              <p style={{ color:'rgba(255,255,255,0.68)', fontSize:14, lineHeight:1.75, margin:0, textAlign:'center' }}>{tx.encStep3Body}</p>
+            </div>
+            {/* Step 3 — The final step */}
+            <div style={{ padding:'28px 24px 36px', textAlign:'center' }}>
+              <h3 style={{ color:'#fff', fontSize:19, fontWeight:800, margin:'0 0 14px', lineHeight:1.35 }}>{tx.encTitle(name)}</h3>
+              <p style={{ color:'rgba(255,255,255,0.72)', fontSize:14, lineHeight:1.7, margin:'0 0 28px' }}>{tx.encBody}</p>
+              <button onClick={onEncounterClick} className="pulseCTA" style={{ ...goldBtn, fontSize:17, padding:'18px 48px', borderRadius:14, fontWeight:800, letterSpacing:0.3 }}>{tx.encCTA}</button>
+            </div>
           </div>
         )}
         {encounterRequested && (
-          <div className="au" style={{ background:'#ECFDF5', border:'1.5px solid #A7F3D0', borderRadius:14, padding:'22px 20px', marginBottom:16, textAlign:'center' }}>
-            <div style={{ fontSize:32, marginBottom:8 }}>✅</div>
-            <h3 style={{ color:'#065F46', fontSize:17, fontWeight:800, margin:'0 0 8px' }}>{tx.encDoneTitle(name)}</h3>
-            <p style={{ color:'#065F46', fontSize:14, lineHeight:1.65, margin:0 }}>{tx.encDoneBody}</p>
-          </div>
-        )}
-        {gateData.openToMeet==='no' && (
-          <div style={{ background:'#fff', border:`1px solid ${C.border}`, borderRadius:12, padding:'16px 18px', marginBottom:16, textAlign:'center' }}>
-            <p style={{ color:C.muted, fontSize:14, margin:0 }}>{tx.noMeet(name)}</p>
+          <div className="au" style={{ background:`linear-gradient(155deg,${C.navyDark} 0%,#0B1A3B 100%)`, borderRadius:18, padding:'32px 24px', marginBottom:16, textAlign:'center', boxShadow:'0 8px 36px rgba(10,22,40,0.35)' }}>
+            <div style={{ fontSize:36, marginBottom:14 }}>🕊️</div>
+            <h3 style={{ color:C.gold, fontSize:20, fontWeight:800, margin:'0 0 12px', lineHeight:1.35 }}>{tx.encDoneTitle(name)}</h3>
+            <p style={{ color:'rgba(255,255,255,0.75)', fontSize:15, lineHeight:1.7, margin:0 }}>{tx.encDoneBody}</p>
           </div>
         )}
 

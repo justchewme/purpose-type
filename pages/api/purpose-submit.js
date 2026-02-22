@@ -7,7 +7,7 @@
 // Required env vars:
 //   ADMIN_PASSWORD  — password for the admin panel
 //   RESEND_API_KEY  — from resend.com (free)
-//   NOTIFY_EMAIL    — email address to receive notifications
+//   (Notify emails are hardcoded in NOTIFY_EMAILS array below)
 //
 // Optional env vars (Google Sheets — can be added later):
 //   GOOGLE_SHEET_ID             — the ID from your Google Sheet URL
@@ -32,6 +32,7 @@ const RATING_LABEL = ['','Struggling','Difficult','Okay','Good','Thriving']
 // domain at resend.com/domains and update the `from` address accordingly.
 const NOTIFY_EMAILS = [
   'justchewme@gmail.com',
+  'elearning@equippedministries.org',
 ]
 
 const QUESTION_LABELS = {
@@ -189,6 +190,7 @@ const AIRTABLE_FIELDS = [
   { name: 'Q4 — People Come to Me For', type: 'singleLineText' },
   { name: 'Q6 — In Prayer',             type: 'singleLineText' },
   { name: 'I wish God would show me',   type: 'multilineText' },
+  { name: 'Encounter Requested',         type: 'singleLineText' },
   { name: 'Submitted At (SGT)',          type: 'singleLineText' },
 ]
 
@@ -236,6 +238,7 @@ async function appendToAirtable(lead) {
     'Q4 — People Come to Me For': a.q4 || '',
     'Q6 — In Prayer':             a.q6 || '',
     'I wish God would show me':   a.q7 || '',
+    'Encounter Requested':        lead.encounterRequested ? 'YES' : 'no',
     'Submitted At (SGT)':         new Date(lead.submittedAt).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' }),
   }
 
@@ -246,6 +249,27 @@ async function appendToAirtable(lead) {
     method: 'POST', headers,
     body: JSON.stringify({ fields }),
   })
+}
+
+async function updateEncounterInAirtable(wa) {
+  const pat    = process.env.AIRTABLE_PAT
+  const baseId = process.env.AIRTABLE_BASE_ID
+  if (!pat || !baseId) return
+  const headers = { 'Authorization': `Bearer ${pat}`, 'Content-Type': 'application/json' }
+  try {
+    const listRes = await fetch(
+      `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(AIRTABLE_TABLE)}?filterByFormula=${encodeURIComponent(`{WhatsApp}="${wa}"`)}`,
+      { headers }
+    )
+    if (!listRes.ok) return
+    const data = await listRes.json()
+    const record = data.records?.[0]
+    if (!record) return
+    await fetch(`https://api.airtable.com/v0/${baseId}/${encodeURIComponent(AIRTABLE_TABLE)}/${record.id}`, {
+      method: 'PATCH', headers,
+      body: JSON.stringify({ fields: { 'Encounter Requested': 'YES' } }),
+    })
+  } catch (e) { console.warn('Could not update encounter in Airtable:', e.message) }
 }
 
 // ─── GOOGLE SHEETS (optional, silent fail if not configured) ──────────────────
@@ -342,6 +366,7 @@ async function handlePost(req, res) {
     const existing = leads.find(l => l.wa === body.wa)
     if (existing) existing.encounterRequested = true
     updateEncounterInSheet(body.wa).catch(() => {})
+    updateEncounterInAirtable(body.wa).catch(() => {})
     return res.status(200).json({ ok: true })
   }
 

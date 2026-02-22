@@ -440,11 +440,62 @@ async function handlePost(req, res) {
   return res.status(200).json({ ok: true, id: lead.id })
 }
 
+async function fetchLeadsFromAirtable() {
+  const pat = process.env.AIRTABLE_PAT
+  const baseId = process.env.AIRTABLE_BASE_ID
+  if (!pat || !baseId) return []
+  const headers = { 'Authorization': `Bearer ${pat}`, 'Content-Type': 'application/json' }
+  const allRecords = []
+  let offset = null
+  try {
+    do {
+      const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(AIRTABLE_TABLE)}?sort%5B0%5D%5Bfield%5D=Submitted+At+(SGT)&sort%5B0%5D%5Bdirection%5D=desc${offset ? `&offset=${offset}` : ''}`
+      const r = await fetch(url, { headers })
+      if (!r.ok) break
+      const data = await r.json()
+      for (const rec of (data.records || [])) {
+        const f = rec.fields || {}
+        allRecords.push({
+          id: rec.id,
+          name: f['Name'] || '',
+          wa: f['WhatsApp'] || '',
+          email: f['Email'] || null,
+          city: f['City'] || null,
+          purposeType: f['Blueprint'] || '',
+          faithJourney: f['Faith Journey'] || '',
+          churchStatus: f['Church Status'] || '',
+          openToMeet: f['Open to Meet'] || '',
+          availability: f['Availability'] ? f['Availability'].split(', ') : [],
+          encounterRequested: f['Encounter Requested'] === 'YES',
+          ratings: {
+            career: f['Career /5'] || 0,
+            relationships: f['Relationships /5'] || 0,
+            faith: f['Faith /5'] || 0,
+            peace: f['Peace /5'] || 0,
+          },
+          answers: {
+            q7: f['I wish God would show me'] || null,
+          },
+          submittedAt: f['Submitted At (SGT)'] || '',
+          read: true,
+        })
+      }
+      offset = data.offset
+    } while (offset)
+  } catch (e) { console.warn('Failed to fetch from Airtable:', e.message) }
+  return allRecords
+}
+
 async function handleGet(req, res) {
   const adminToken = req.headers['x-admin-token']
   if (!adminToken || adminToken !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
-  leads.forEach(l => { l.read = true })
-  return res.status(200).json({ leads })
+  // Use in-memory if available, otherwise fetch from Airtable
+  if (leads.length > 0) {
+    leads.forEach(l => { l.read = true })
+    return res.status(200).json({ leads })
+  }
+  const airtableLeads = await fetchLeadsFromAirtable()
+  return res.status(200).json({ leads: airtableLeads })
 }

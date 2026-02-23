@@ -4,7 +4,8 @@ import Head from 'next/head'
 // ─── GLOBAL CSS (animations) ──────────────────────────────────────────────────
 const GLOBAL_CSS = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
+  html { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
   @keyframes fadeUp  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeIn  { from { opacity:0; }  to { opacity:1; } }
   @keyframes floatY  { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
@@ -551,7 +552,7 @@ function normalizeWA(phone) {
 }
 
 // ─── SHARED STYLE HELPERS ────────────────────────────────────────────────────
-const wrap = { minHeight:'100vh', background:C.cream, fontFamily:'-apple-system, BlinkMacSystemFont,"Segoe UI",sans-serif' }
+const wrap = { minHeight:'100dvh', background:C.cream, fontFamily:'-apple-system, BlinkMacSystemFont,"Segoe UI",sans-serif' }
 const maxW  = { maxWidth:520, margin:'0 auto', padding:'0 16px' }
 const primBtn = {
   display:'block', width:'100%', padding:'17px 24px',
@@ -570,7 +571,7 @@ function LangToggle({ lang, setLang }) {
     <button
       onClick={() => setLang(l => l==='EN'?'ID':'EN')}
       style={{
-        position:'fixed', top:14, right:14, zIndex:999,
+        position:'fixed', top:'max(14px, env(safe-area-inset-top, 14px))', right:'max(14px, env(safe-area-inset-right, 14px))', zIndex:999,
         background:'rgba(255,255,255,0.95)', border:`1.5px solid ${C.border}`,
         borderRadius:20, padding:'7px 14px', fontSize:13, fontWeight:700,
         color:C.navy, cursor:'pointer', backdropFilter:'blur(8px)',
@@ -776,14 +777,14 @@ function MCQuestion({ q, qIndex, total, selected, onSelect, onNext, onBack, lang
   const isLast = (q.options.length % 2 !== 0)
 
   return (
-    <div style={{ minHeight:'100vh', background:`linear-gradient(160deg, #0A1628 0%, #0D1B4B 55%, #122060 100%)`, display:'flex', flexDirection:'column', fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif' }}>
+    <div style={{ minHeight:'100dvh', background:`linear-gradient(160deg, #0A1628 0%, #0D1B4B 55%, #122060 100%)`, display:'flex', flexDirection:'column', fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif' }}>
 
       {/* ── Progress bar ── */}
       <div style={{ padding:'14px 20px 0', flexShrink:0 }}>
         <div style={{ maxWidth:520, margin:'0 auto' }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:5 }}>
             {qIndex > 0 ? (
-              <button onClick={onBack} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:12, fontWeight:600, cursor:'pointer', padding:'4px 0', display:'flex', alignItems:'center', gap:4 }}>
+              <button onClick={onBack} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.4)', fontSize:13, fontWeight:600, cursor:'pointer', padding:'10px 12px 10px 0', minHeight:44, display:'flex', alignItems:'center', gap:4 }}>
                 ← {lang==='EN' ? 'Back' : 'Kembali'}
               </button>
             ) : <span />}
@@ -867,7 +868,7 @@ function RatingQuestion({ q, qIndex, total, ratings, onRate, onNext, onBack, lan
       <ProgressBar current={qIndex+1} total={total} lang={lang} />
       <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
         {qIndex > 0 && (
-          <button onClick={onBack} style={{ background:'none', border:'none', color:C.muted, fontSize:13, fontWeight:600, cursor:'pointer', padding:'0 0 12px', display:'flex', alignItems:'center', gap:4 }}>
+          <button onClick={onBack} style={{ background:'none', border:'none', color:C.muted, fontSize:13, fontWeight:600, cursor:'pointer', padding:'10px 12px 10px 0', minHeight:44, display:'flex', alignItems:'center', gap:4 }}>
             ← {lang==='EN' ? 'Back' : 'Kembali'}
           </button>
         )}
@@ -929,7 +930,7 @@ function OpenTextQuestion({ q, qIndex, total, value, onChange, onNext, onBack, l
       <ProgressBar current={qIndex+1} total={total} lang={lang} />
       <div style={{ ...maxW, paddingTop:28, paddingBottom:48 }}>
         {qIndex > 0 && (
-          <button onClick={onBack} style={{ background:'none', border:'none', color:C.muted, fontSize:13, fontWeight:600, cursor:'pointer', padding:'0 0 12px', display:'flex', alignItems:'center', gap:4 }}>
+          <button onClick={onBack} style={{ background:'none', border:'none', color:C.muted, fontSize:13, fontWeight:600, cursor:'pointer', padding:'10px 12px 10px 0', minHeight:44, display:'flex', alignItems:'center', gap:4 }}>
             ← {lang==='EN' ? 'Back' : 'Kembali'}
           </button>
         )}
@@ -1043,7 +1044,7 @@ function GateScreen({ lang, onSubmit, submitting, error }) {
           <p style={{ fontSize:13, color:C.muted, margin:'-6px 0 14px' }}>{tx.cityHint}</p>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
             {tx.cityOpts.map(({ v, label }) => (
-              <button key={v} style={{ ...optBtn(city===v), gridColumn: v==='other-indonesia'||v==='outside' ? 'span 2' : 'auto' }} onClick={()=>setCity(v)}>{label}</button>
+              <button key={v} style={{ ...optBtn(city===v), gridColumn: v==='other-kepri'||v==='other-indonesia'||v==='outside' ? 'span 2' : 'auto' }} onClick={()=>setCity(v)}>{label}</button>
             ))}
           </div>
           {city && !isBatam && (
@@ -1130,7 +1131,7 @@ function LoadingScreen({ purposeType, lang, onDone }) {
   }, [])
 
   return (
-    <div style={{ minHeight:'100vh', background:`linear-gradient(155deg, #0A1628 0%, #0F2167 60%, #1E3A7A 100%)`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:24, textAlign:'center', fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif' }}>
+    <div style={{ minHeight:'100dvh', background:`linear-gradient(155deg, #0A1628 0%, #0F2167 60%, #1E3A7A 100%)`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:24, textAlign:'center', fontFamily:'-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif' }}>
 
       {/* Phase 0: Analysis */}
       {phase === 0 && (
@@ -1325,7 +1326,7 @@ function ResultsScreen({ purposeType, name, ratings, answers, gateData, onEncoun
           </button>
         </div>
 
-        <p style={{ textAlign:'center', fontSize:12, color:C.muted, lineHeight:1.7 }}>{tx.footer}</p>
+        <p style={{ textAlign:'center', fontSize:12, color:C.muted, lineHeight:1.7, paddingBottom:'env(safe-area-inset-bottom, 0px)' }}>{tx.footer}</p>
       </div>
     </div>
   )
@@ -1405,7 +1406,7 @@ export default function Home() {
   const head = (title) => (
     <Head>
       <title>{title}</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       <meta name="description" content="MyPurpose — Discover the specific Biblical Blueprint God designed for your life. 7 types, free, 3 minutes." />
       <meta property="og:title" content="MyPurpose — Which of the 7 Biblical Blueprints Are You?" />
       <meta property="og:description" content="God wired you differently. Discover your Biblical Blueprint on MyPurpose — free, 3 minutes." />

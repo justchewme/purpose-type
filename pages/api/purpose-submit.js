@@ -280,10 +280,14 @@ async function appendToAirtable(lead) {
   // Remove empty-string email to avoid Airtable validation error
   if (!fields['Email']) delete fields['Email']
 
-  await fetch(`https://api.airtable.com/v0/${baseId}/${encodeURIComponent(AIRTABLE_TABLE)}`, {
+  const writeRes = await fetch(`https://api.airtable.com/v0/${baseId}/${encodeURIComponent(AIRTABLE_TABLE)}`, {
     method: 'POST', headers,
     body: JSON.stringify({ fields }),
   })
+  if (!writeRes.ok) {
+    const errBody = await writeRes.text()
+    throw new Error(`Airtable write HTTP ${writeRes.status}: ${errBody}`)
+  }
 }
 
 async function updateEncounterInAirtable(wa) {
@@ -411,6 +415,13 @@ async function handlePost(req, res) {
     return res.status(400).json({ error: 'Missing required fields.' })
   }
 
+  // Only process submissions from Batam area
+  const BATAM_CITIES = ['batam', 'tanjung-pinang', 'bintan', 'karimun']
+  if (!city || !BATAM_CITIES.includes(city)) {
+    // Return success to the user but don't store or email
+    return res.status(200).json({ ok: true, id: `PT-${Date.now()}-SKP` })
+  }
+
   const lead = {
     id: `PT-${Date.now()}-${Math.random().toString(36).slice(2, 5).toUpperCase()}`,
     name: String(name).trim().slice(0, 100),
@@ -433,9 +444,18 @@ async function handlePost(req, res) {
   if (leads.length > 1000) leads.pop()
 
   // Airtable is primary store — must complete before responding
-  try { await appendToAirtable(lead) } catch (e) { console.error('Airtable write failed:', e.message) }
-  // Email + Sheets are secondary, fire-and-forget
-  notifyEmail(lead).catch(e => console.error('Email failed:', e.message))
+  try {
+    await appendToAirtable(lead)
+  } catch (e) {
+    console.error('Airtable write failed:', e.message)
+  }
+  // Email notification
+  try {
+    await notifyEmail(lead)
+  } catch (e) {
+    console.error('Email failed:', e.message)
+  }
+  // Sheets are secondary, fire-and-forget
   appendToSheet(lead).catch(e => console.error('Sheets failed:', e.message))
 
   return res.status(200).json({ ok: true, id: lead.id })
